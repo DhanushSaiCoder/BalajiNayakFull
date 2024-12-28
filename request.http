@@ -1,2 +1,8 @@
-GET https://localhost:5000/days
+POST http://localhost:5000/auth/signup
 content-type: application/json
+
+{
+    "email": "dhanushsai1467@gmail.com",
+    "password": "123456",
+    "pin": "1234"
+}
