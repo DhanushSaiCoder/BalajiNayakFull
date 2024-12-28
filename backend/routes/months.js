@@ -38,7 +38,6 @@ router.post('/', async (req, res) => {
 
         const month = new Month({
             month: req.body.month,
-            monthName: req.body.monthName,
             year: req.body.year,
             days: req.body.days
         });
@@ -76,13 +75,16 @@ router.post('/day', async (req, res) => {
 
         console.log('Received POST request with body:', req.body);
 
-        const monthDoc = await Month.findOne({ month: req.body.month, year: req.body.year });
+        const dateString = req.body.date;
+        const date = new Date(dateString);
 
-        res.send(monthDoc)
-        
-        if (!monthDoc) {
-            //create a new month document...
-        }
+        const currYear = date.getFullYear();
+        const currMonth = date.getMonth() + 1;
+
+
+        const monthDoc = await Month.findOne({ month: currMonth, year: currYear });
+
+        console.log('monthDoc', monthDoc)
 
         // validate the day in request body 
         const { error } = validateDay(req.body);
@@ -94,10 +96,34 @@ router.post('/day', async (req, res) => {
             });
         }
 
+        // if month document doesnt exists, create one
+        if (!monthDoc) {
+            var newMonthDoc = createMonthDocument();
+            newMonthDoc.days.push(req.body);
+            console.log('Creating new month:', newMonthDoc);
+            await newMonthDoc.save();
+            res.send(newMonthDoc);
+        }
+
+        // if month document exists, add day to it
+        monthDoc.days.push(req.body);
+        console.log('Saving month:', monthDoc);
+        await monthDoc.save();
+        res.send(monthDoc);
+
     } catch (ex) {
         console.log('Error:', ex.message);
         res.status(500).send('Something failed.');
     }
 });
 
+function createMonthDocument() {
+    const currentDate = new Date();
+    const newMonthDoc = new Month({
+        month: currentDate.getMonth() + 1, // getMonth() returns 0-11
+        year: currentDate.getFullYear(),
+        days: []
+    });
+    return newMonthDoc;
+}
 module.exports = router;

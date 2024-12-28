@@ -15,7 +15,6 @@ const daySchema = new mongoose.Schema({
 
 const monthSchema = new mongoose.Schema({
     month: { type: Number, required: true },
-    monthName: { type: String, required: true },
     year: { type: Number, required: true },
     days: [daySchema],
 });
@@ -25,7 +24,6 @@ const Month = mongoose.model('Month', monthSchema);
 function validateMonth(month) {
     const schema = Joi.object({
         month: Joi.number().integer().min(1).max(12).required(),
-        monthName: Joi.string().required(),
         year: Joi.number().integer().required(),
         days: Joi.array().items(
             Joi.object({
