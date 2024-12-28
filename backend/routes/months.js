@@ -102,10 +102,21 @@ router.post('/day', async (req, res) => {
             newMonthDoc.days.push(req.body);
             console.log('Creating new month:', newMonthDoc);
             await newMonthDoc.save();
-            res.send(newMonthDoc);
+            return res.send(newMonthDoc);
         }
 
-        // if month document exists, add day to it
+        // if month document exists, check whether the day already exists, if yes replace the periods array with the new one.
+        if (monthDoc.days.length > 0 && monthDoc.days.some(day => new Date(day.date).toISOString() === dateString)) {
+            console.log('found the day:', dateString);
+            const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString() === dateString);
+            if (dayIndex !== -1) {
+                monthDoc.days[dayIndex] = req.body;
+                console.log('after replacing the periods:', monthDoc);
+                await monthDoc.save();
+                return res.send(monthDoc);
+            }
+        }
+
         monthDoc.days.push(req.body);
         console.log('Saving month:', monthDoc);
         await monthDoc.save();
