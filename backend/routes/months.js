@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 router.post('/day', async (req, res) => {
     // Sample body
     // {
-    //     "date": "2023-10-01T00:00:00.000Z",
+    //     "date": "2023-10-01",
     //     "periods": [
     //         {
     //             "class": 10,
@@ -69,12 +69,12 @@ router.post('/day', async (req, res) => {
     //             "isLeisure": false
     //         }
     //     ]
-    // },
+    // }
 
     try {
-
         console.log('Received POST request with body:', req.body);
-        // validate the day in request body 
+
+        // Validate the day in request body
         const { error } = validateDay(req.body);
         if (error) {
             console.log('Validation error:', error.details[0].message);
@@ -85,35 +85,46 @@ router.post('/day', async (req, res) => {
         }
 
         const dateString = req.body.date;
-        const date = new Date(dateString);
-
-        const currYear = date.getFullYear();
-        const currMonth = date.getMonth() + 1;
-
-        const monthDoc = await Month.findOne({ month: currMonth, year: currYear });
-
-
-        // if month document doesnt exists, create one
-        if (!monthDoc) {
-            var newMonthDoc = createMonthDocument();
-            newMonthDoc.days.push(req.body);
-            console.log('Creating new month:', newMonthDoc);
-            await newMonthDoc.save();
-            return res.send(newMonthDoc);
+        if (!dateString) {
+            return res.status(400).send({
+                short: "missingDate",
+                message: "Date is required."
+            });
         }
-        
-        console.log('monthDoc', monthDoc)
 
-        // if month document exists, check whether the day already exists, if yes replace the periods array with the new one.
-        if (monthDoc.days.length > 0 && monthDoc.days.some(day => new Date(day.date).toISOString() === dateString)) {
-            console.log('found the day:', dateString);
-            const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString() === dateString);
-            if (dayIndex !== -1) {
-                monthDoc.days[dayIndex] = req.body;
-                console.log('after replacing the periods:', monthDoc);
-                await monthDoc.save();
-                return res.send(monthDoc);
-            }
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return res.status(400).send({
+                short: "invalidDate",
+                message: "Invalid date format."
+            });
+        }
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+
+        let monthDoc = await Month.findOne({ month, year });
+
+        // If month document doesn't exist, create one
+        if (!monthDoc) {
+            monthDoc = createMonthDocument();
+            monthDoc.month = month;
+            monthDoc.year = year;
+            monthDoc.days.push(req.body);
+            console.log('Creating new month:', monthDoc);
+            await monthDoc.save();
+            return res.send(monthDoc);
+        }
+
+        console.log('monthDoc', monthDoc);
+
+        // If month document exists, check whether the day already exists, if yes replace the periods array with the new one.
+        const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString() === date.toISOString());
+        if (dayIndex !== -1) {
+            monthDoc.days[dayIndex] = req.body;
+            console.log('After replacing the periods:', monthDoc);
+            await monthDoc.save();
+            return res.send(monthDoc);
         }
 
         monthDoc.days.push(req.body);
