@@ -2,7 +2,6 @@ const express = require("express");
 const bcrypt = require("bcrypt"); // Import bcrypt for hashing and comparing passwords
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const path = require('path');
 const router = express.Router();
 
 // Serve the signup page
