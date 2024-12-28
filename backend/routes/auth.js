@@ -8,6 +8,7 @@ const router = express.Router();
 // Serve the signup page
 router.get('/signup', (req, res) => {
     res.send('signup page');
+    console.log('signup page');
 });
 
 // Serve the login page
