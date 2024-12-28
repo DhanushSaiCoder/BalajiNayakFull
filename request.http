@@ -24,7 +24,7 @@ content-type: application/json
 
 
 POST http://localhost:5000/months/day
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTkxOTUsImV4cCI6MTczNTQxOTI1NX0.lw2vpi7_zL-eIfHMe8UW0ZTCPX5mwtY65xIMZCZmuHM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTk3MDAsImV4cCI6MTczNTQxOTc2MH0.C7cSj2TUU9oYdkJghzb6967horKVacTwieg9u8P0kIs
 content-type: application/json
 
 
