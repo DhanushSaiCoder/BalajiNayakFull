@@ -9,12 +9,12 @@ content-type: application/json
 
 ###
 POST http://localhost:5000/months
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTg5OTAsImV4cCI6MTczNTQxOTA1MH0.ste9uC3nC_7VM1xfOy5w9-ZTXCPkrfjZaByCiu3Y7pI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MjAwMzMsImV4cCI6MTczODAxMjAzM30.f3MxHoZ0lhTlMmRYNose7iQl9lY2ukz9e_5RtTO9WK8
 content-type: application/json
 
 
 {
-    "month": 1,
+    "month": 6,
     "year": 2023,
     "days": []
         
@@ -24,12 +24,12 @@ content-type: application/json
 
 
 POST http://localhost:5000/months/day
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTk3MDAsImV4cCI6MTczNTQxOTc2MH0.C7cSj2TUU9oYdkJghzb6967horKVacTwieg9u8P0kIs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MjAwMzMsImV4cCI6MTczODAxMjAzM30.f3MxHoZ0lhTlMmRYNose7iQl9lY2ukz9e_5RtTO9WK8
 content-type: application/json
 
 
 {
-    "date": "2024-12-29T00:00:00.000Z",
+    "date": "2024-01-11T00:00:00.000Z",
     "periods": [
         {
             "class": 1,
