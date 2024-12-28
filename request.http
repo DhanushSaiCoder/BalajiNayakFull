@@ -1,5 +1,15 @@
+POST http://localhost:5000/auth/login
+content-type: application/json
+
+{
+    "email": "dhanushsai1467@gmail.com",
+    "password": "123456",
+    "pin": "1234"
+}
+
+###
 POST http://localhost:5000/months
-Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTgxMjgsImV4cCI6MTczNTQxODE4OH0.RYB-Iyjc68sg6mrhHWvDaeb7tvINtGSQvjWyk4Kt9Fs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTg5OTAsImV4cCI6MTczNTQxOTA1MH0.ste9uC3nC_7VM1xfOy5w9-ZTXCPkrfjZaByCiu3Y7pI
 content-type: application/json
 
 
@@ -12,11 +22,75 @@ content-type: application/json
 }
 ###
 
-POST http://localhost:5000/auth/login
+
+POST http://localhost:5000/months/day
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTkxOTUsImV4cCI6MTczNTQxOTI1NX0.lw2vpi7_zL-eIfHMe8UW0ZTCPX5mwtY65xIMZCZmuHM
 content-type: application/json
 
+
 {
-    "email": "dhanushsai1467@gmail.com",
-    "password": "123456",
-    "pin": "1234"
+    "date": "2024-12-29T00:00:00.000Z",
+    "periods": [
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        }
+    ]
 }
+###
+
+
+
+
+GET http://localhost:5000/months
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTgzNzcsImV4cCI6MTczNTQxODQzN30.qpRNrOc5A2CaJVc6gI6v6gqHMHiWPn-mjoTkBgShtxI
+content-type: application/json
+
+###
+GET http://localhost:5000/months/day?date=2024-12-29T00:00:00.000Z
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTkwODksImV4cCI6MTczNTQxOTE0OX0.dG6fZYSj2WJ6a5Wh-Ty9da3ObtQ6XlyGPUMwgR3kKRE
+content-type: application/json

@@ -5,13 +5,15 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const authenticateToken = require('../middleware/authenticateToken');
 
-router.get('/',authenticateToken, (req, res) => {
-    
+router.get('/', authenticateToken, (req, res) => {
+    // req.send(req.user);
+    console.log(req.user)
 });
 
 //create new month
-router.post('/',authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     try {
+
 
         console.log('Received POST request with body:', req.body);
 
@@ -39,7 +41,8 @@ router.post('/',authenticateToken, async (req, res) => {
         const month = new Month({
             month: req.body.month,
             year: req.body.year,
-            days: req.body.days
+            days: req.body.days,
+            user: req.user._id
         });
 
         console.log('Saving month:', month);
@@ -52,7 +55,7 @@ router.post('/',authenticateToken, async (req, res) => {
 });
 
 //get day
-router.get('/day',authenticateToken, async (req, res) => {
+router.get('/day', authenticateToken, async (req, res) => {
     try {
         console.log('Received GET request with query:', req.query);
 
@@ -82,6 +85,12 @@ router.get('/day',authenticateToken, async (req, res) => {
                 message: "Day not found."
             });
         }
+        if (req.user._id.toString() !== monthDoc.user.toString()) {
+            return res.status(403).send({
+                short: "unauthorized",
+                message: "You are not authorized to view this day."
+            });
+        }
 
         res.send(day);
 
@@ -92,7 +101,7 @@ router.get('/day',authenticateToken, async (req, res) => {
 });
 
 //create new day
-router.post('/day',authenticateToken, async (req, res) => {
+router.post('/day', authenticateToken, async (req, res) => {
     // Sample body
     // {
     //     "date": "2023-10-01",
@@ -153,6 +162,17 @@ router.post('/day',authenticateToken, async (req, res) => {
             monthDoc.year = year;
             monthDoc.days.push(req.body);
             console.log('Creating new month:', monthDoc);
+
+            if (req.user) {
+                monthDoc.user = req.user._id;
+            }
+            else {
+                return res.status(401).send({
+                    short: "unauthorized",
+                    message: "You are not authorized to create a day."
+                });
+            }
+
             await monthDoc.save();
             return res.send(monthDoc);
         }
@@ -164,12 +184,24 @@ router.post('/day',authenticateToken, async (req, res) => {
         if (dayIndex !== -1) {
             monthDoc.days[dayIndex] = req.body;
             console.log('After replacing the periods:', monthDoc);
+            if (req.user._id.toString() !== monthDoc.user.toString()) {
+                return res.status(403).send({
+                    short: "unauthorized",
+                    message: "You are not authorized to create a day."
+                });
+            }
             await monthDoc.save();
             return res.send(monthDoc);
         }
 
         monthDoc.days.push(req.body);
         console.log('Saving month:', monthDoc);
+        if (req.user._id.toString() !== monthDoc.user.toString()) {
+            return res.status(403).send({
+                short: "unauthorized",
+                message: "You are not authorized to create a day."
+            });
+        }
         await monthDoc.save();
         res.send(monthDoc);
 
