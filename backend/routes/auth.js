@@ -7,12 +7,13 @@ const router = express.Router();
 
 // Serve the signup page
 router.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/signup.html'));
+    res.send('signup page');
 });
 
 // Serve the login page
 router.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/login.html'));
+    res.send('login page');
+
 });
 
 // Signup Route - Hash the password before saving
