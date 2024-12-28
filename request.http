@@ -1,4 +1,18 @@
 POST http://localhost:5000/months
+Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTgxMjgsImV4cCI6MTczNTQxODE4OH0.RYB-Iyjc68sg6mrhHWvDaeb7tvINtGSQvjWyk4Kt9Fs
+content-type: application/json
+
+
+{
+    "month": 1,
+    "year": 2023,
+    "days": []
+        
+    
+}
+###
+
+POST http://localhost:5000/auth/login
 content-type: application/json
 
 {
