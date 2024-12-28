@@ -45,8 +45,25 @@ function validateMonth(month) {
     return schema.validate(month);
 }
 
+function validateDay(day) {
+    const schema = Joi.object({
+        date: Joi.date().required(),
+        periods: Joi.array().items(
+            Joi.object({
+                class: Joi.number().integer().required(),
+                section: Joi.string().required(),
+                isSubstitution: Joi.boolean().required(),
+                isLeisure: Joi.boolean().required(),
+            })
+        ).required()
+    });
+
+    return schema.validate(day);
+}
+
 module.exports = {
     Month,
+    validateDay,
     validateMonth
 };
 
