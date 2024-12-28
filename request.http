@@ -1,4 +1,4 @@
-POST http://localhost:5000/auth/signup
+POST http://localhost:5000/months
 content-type: application/json
 
 {
