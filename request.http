@@ -1,0 +1,2 @@
+GET https://localhost:5000/days
+content-type: application/json
