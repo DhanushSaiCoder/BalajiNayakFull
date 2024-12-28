@@ -45,7 +45,8 @@ function validateMonth(month) {
 
 function validateDay(day) {
     const schema = Joi.object({
-        date: Joi.date().required(),
+        date: Joi.date().default(() => new Date()),
+
         periods: Joi.array().items(
             Joi.object({
                 class: Joi.number().integer().required(),

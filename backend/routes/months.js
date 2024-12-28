@@ -74,18 +74,6 @@ router.post('/day', async (req, res) => {
     try {
 
         console.log('Received POST request with body:', req.body);
-
-        const dateString = req.body.date;
-        const date = new Date(dateString);
-
-        const currYear = date.getFullYear();
-        const currMonth = date.getMonth() + 1;
-
-
-        const monthDoc = await Month.findOne({ month: currMonth, year: currYear });
-
-        console.log('monthDoc', monthDoc)
-
         // validate the day in request body 
         const { error } = validateDay(req.body);
         if (error) {
@@ -96,6 +84,15 @@ router.post('/day', async (req, res) => {
             });
         }
 
+        const dateString = req.body.date;
+        const date = new Date(dateString);
+
+        const currYear = date.getFullYear();
+        const currMonth = date.getMonth() + 1;
+
+        const monthDoc = await Month.findOne({ month: currMonth, year: currYear });
+
+
         // if month document doesnt exists, create one
         if (!monthDoc) {
             var newMonthDoc = createMonthDocument();
@@ -104,6 +101,8 @@ router.post('/day', async (req, res) => {
             await newMonthDoc.save();
             return res.send(newMonthDoc);
         }
+        
+        console.log('monthDoc', monthDoc)
 
         // if month document exists, check whether the day already exists, if yes replace the periods array with the new one.
         if (monthDoc.days.length > 0 && monthDoc.days.some(day => new Date(day.date).toISOString() === dateString)) {
