@@ -5,11 +5,10 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 
 router.get('/', (req, res) => {
-    // const days = await Day.find().sort('date');
-    // res.send(days);
-    res.send('Hello, from days route!');
+    
 });
 
+//create new month
 router.post('/', async (req, res) => {
     try {
 
@@ -51,6 +50,47 @@ router.post('/', async (req, res) => {
     }
 });
 
+//get day
+router.get('/day', async (req, res) => {
+    try {
+        console.log('Received GET request with query:', req.query);
+
+        const date = new Date(req.query.date);
+        if (isNaN(date.getTime())) {
+            return res.status(400).send({
+                short: "invalidDate",
+                message: "Invalid date format."
+            });
+        }
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+
+        const monthDoc = await Month.findOne({ month, year });
+        if (!monthDoc) {
+            return res.status(404).send({
+                short: "monthNotFound",
+                message: "Month not found."
+            });
+        }
+
+        const day = monthDoc.days.find(day => new Date(day.date).toISOString() === date.toISOString());
+        if (!day) {
+            return res.status(404).send({
+                short: "dayNotFound",
+                message: "Day not found."
+            });
+        }
+
+        res.send(day);
+
+    } catch (ex) {
+        console.log('Error:', ex.message);
+        res.status(500).send('Something failed.');
+    }
+});
+
+//create new day
 router.post('/day', async (req, res) => {
     // Sample body
     // {
@@ -137,6 +177,9 @@ router.post('/day', async (req, res) => {
         res.status(500).send('Something failed.');
     }
 });
+
+
+
 
 function createMonthDocument() {
     const currentDate = new Date();
