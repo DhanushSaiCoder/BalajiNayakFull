@@ -3,13 +3,14 @@ const router = express.Router();
 const { Month, validateMonth, validateDay } = require('../models/Month');
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const authenticateToken = require('../middleware/authenticateToken');
 
-router.get('/', (req, res) => {
+router.get('/',authenticateToken, (req, res) => {
     
 });
 
 //create new month
-router.post('/', async (req, res) => {
+router.post('/',authenticateToken, async (req, res) => {
     try {
 
         console.log('Received POST request with body:', req.body);
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
 });
 
 //get day
-router.get('/day', async (req, res) => {
+router.get('/day',authenticateToken, async (req, res) => {
     try {
         console.log('Received GET request with query:', req.query);
 
@@ -91,7 +92,7 @@ router.get('/day', async (req, res) => {
 });
 
 //create new day
-router.post('/day', async (req, res) => {
+router.post('/day',authenticateToken, async (req, res) => {
     // Sample body
     // {
     //     "date": "2023-10-01",
