@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../home.css';
-import { date } from 'joi';
 
 function Home() {
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
   }
-
   const [currPeriod, setCurrPeriod] = useState(1);
   const [isLeisure, setIsLeisure] = useState(false);
   const [isSubstitution, setIsSubstitution] = useState(false);
@@ -98,7 +96,7 @@ function Home() {
         .then(response => response.json())
         .then(data => {
           setReadyToSubmit(false);
-          console.log('Success:', data);
+          saveData(data);
           setSubmitted(true);
         })
         .catch((error) => {
@@ -108,7 +106,28 @@ function Home() {
     }
   }, [readyToSubmit, data]);
 
-  // console.log(data);
+  const saveData = (data) => {
+    const monthId = data._id;
+    console.log('monthId:', monthId);
+
+    // Fetch day by sending GET request to /months/day with JWT token in headers
+    fetch(`http://localhost:5000/months/${monthId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Day:', data);//month data
+        
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Fetching day failed!');
+      });
+  };
 
   return (
     <div className='HomeContainer'>

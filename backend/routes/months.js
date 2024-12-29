@@ -5,17 +5,49 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const authenticateToken = require('../middleware/authenticateToken');
 
+//getAllMonths
 router.get('/', authenticateToken, async (req, res) => {
     const { userId } = req.user;
     const months = await Month.find({ user: userId })
     res.json({ userId, months })
 });
 
+//get month
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({
+                short: "invalidId",
+                message: "Invalid month ID."
+            });
+        }
+
+        console.log('Received GET request with params:', req.params);
+
+        const month = await Month.findById(id);
+        if (!month) {
+            return res.status(404).send({
+                short: "monthNotFound",
+                message: "The month with the given ID was not found."
+            });
+        }
+        if (!req.user || !req.user.userId || !month.user || req.user.userId.toString() !== month.user.toString()) {
+            return res.status(403).send({
+                short: "unauthorized",
+                message: "You are not authorized to view this month."
+            });
+        }
+        res.send(month);
+    } catch (ex) {
+        console.log('Error:', ex.message);
+        res.status(500).send('Something failed.');
+    }
+});
+
 //create new month
 router.post('/', authenticateToken, async (req, res) => {
     try {
-
-
         console.log('Received POST request with body:', req.body);
 
         const existingMonth = await Month.findOne({ month: req.body.month, year: req.body.year, user: req.user.userId });
@@ -28,7 +60,6 @@ router.post('/', authenticateToken, async (req, res) => {
             });
         }
 
-
         const { error } = validateMonth(req.body);
         if (error) {
             console.log('Validation error:', error.details[0].message);
@@ -37,7 +68,6 @@ router.post('/', authenticateToken, async (req, res) => {
                 message: error.details[0].message
             });
         }
-
 
         const month = new Month({
             month: req.body.month,
@@ -194,9 +224,6 @@ router.post('/day', authenticateToken, async (req, res) => {
     }
 });
 
-
-
-
 function createMonthDocument() {
     const currentDate = new Date();
     const newMonthDoc = new Month({
@@ -206,4 +233,5 @@ function createMonthDocument() {
     });
     return newMonthDoc;
 }
+
 module.exports = router;
