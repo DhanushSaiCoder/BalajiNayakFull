@@ -17,11 +17,34 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
     console.log('Form data sending to server...', formData);
-
+    // POST to /auth/login
+    fetch('/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const data = await response.json();
+          console.log(data.message)
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+        data.token && localStorage.setItem('BNtoken', data.token);
+        window.location.href = '/';
+        // Handle success (e.g., redirect to login page)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        // Handle error (e.g., show error message)
+      });
   };
 
   const styles = {
@@ -39,7 +62,7 @@ function Login() {
       borderRadius: '8px',
       boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
       width: '300px',
-      
+
 
     },
     inputGroup: {
@@ -69,7 +92,7 @@ function Login() {
     title: {
       marginBottom: '20px',
     },
-    linksDiv:{
+    linksDiv: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
