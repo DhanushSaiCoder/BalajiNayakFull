@@ -17,7 +17,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
         console.log('Received POST request with body:', req.body);
 
-        const existingMonth = await Month.findOne({ month: req.body.month, year: req.body.year });
+        const existingMonth = await Month.findOne({ month: req.body.month, year: req.body.year, user: req.user._id });
 
         if (existingMonth) {
             console.log('Month already exists:', existingMonth);
