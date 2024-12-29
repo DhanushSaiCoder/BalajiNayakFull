@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../home.css';
 
 function Home() {
@@ -74,7 +74,6 @@ function Home() {
         return { ...prevData, periods: updatedPeriods };
       });
 
-      console.log('final data', data);
       setReadyToSubmit(true);
     }
   };
@@ -84,27 +83,29 @@ function Home() {
     setCurrPeriod(period => period - 1);
   };
 
-  console.log(data);
-
-  if (readyToSubmit) {
-    fetch('http://localhost:5000/months/day', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
-      },
-      body: JSON.stringify(data)
-    })
-      .then(response => response.json())
-      .then(data => {
-        setReadyToSubmit(false);
-        console.log('Success:', data);
+  useEffect(() => {
+    if (readyToSubmit) {
+      fetch('http://localhost:5000/months/day', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+        },
+        body: JSON.stringify(data)
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('Attendance entry failed!');
-      });
-  }
+        .then(response => response.json())
+        .then(data => {
+          setReadyToSubmit(false);
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Attendance entry failed!');
+        });
+    }
+  }, [readyToSubmit, data]);
+  
+  // console.log(data);
 
   return (
     <div className='HomeContainer'>

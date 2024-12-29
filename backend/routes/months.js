@@ -103,25 +103,6 @@ router.get('/day', authenticateToken, async (req, res) => {
 
 //create new day
 router.post('/day', authenticateToken, async (req, res) => {
-    // Sample body
-    // {
-    //     "date": "2023-10-01",
-    //     "periods": [
-    //         {
-    //             "class": 10,
-    //             "section": "A",
-    //             "isSubstitution": false,
-    //             "isLeisure": false
-    //         },
-    //         {
-    //             "class": 11,
-    //             "section": "B",
-    //             "isSubstitution": true,
-    //             "isLeisure": false
-    //         }
-    //     ]
-    // }
-
     try {
         console.log('Received POST request with body:', req.body);
 
@@ -154,14 +135,11 @@ router.post('/day', authenticateToken, async (req, res) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
 
+        console.log(`Searching for month document with month: ${month}, year: ${year}, user: ${req.user.userId}`);
         let monthDoc = await Month.findOne({ month, year, user: req.user.userId });
 
-        // if(!monthDoc.user){
-        //     res.send({message:'fetched a month document of other user '})
-        // }
-
-        // If month document doesn't exist, create one
         if (!monthDoc) {
+            console.log('No existing month document found, creating a new one.');
             monthDoc = new Month({
                 month: month,
                 year: year,
@@ -169,7 +147,6 @@ router.post('/day', authenticateToken, async (req, res) => {
                 days: [req.body]
             });
             console.log('Creating new month:', monthDoc);
-            console.log(req.user);
             if (req.user) {
                 monthDoc.user = req.user.userId;
             } else {
@@ -183,7 +160,7 @@ router.post('/day', authenticateToken, async (req, res) => {
             return res.send(monthDoc);
         }
 
-        console.log('monthDoc', monthDoc);
+        console.log('Found existing month document:', monthDoc);
 
         // If month document exists, check whether the day already exists, if yes replace the periods array with the new one.
         const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString() === date.toISOString());
