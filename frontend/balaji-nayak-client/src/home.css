@@ -272,3 +272,7 @@ input[type="number"] {
 .nextPeriod:hover,.prevPeriod:hover {
     background-color: #359b52;
 }
+.formDisabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
