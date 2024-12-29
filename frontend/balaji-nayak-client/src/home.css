@@ -1,0 +1,53 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: "Montserrat", serif;
+    color: rgb(24, 20, 6);
+    background-color: rgb(255, 254, 248);
+  }
+.leftNav{
+    width: 20vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #181406;
+    color: rgb(255, 254, 248);
+    font-size: 0.85rem;
+}
+.navHeaderDiv
+{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8%;
+    border: 2px solid red;
+} 
+.navContentDiv
+{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 84%;
+    border: 2px solid red;
+} 
+
+.navFooterDiv
+{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8%;
+    border: 2px solid red;
+} 
+
