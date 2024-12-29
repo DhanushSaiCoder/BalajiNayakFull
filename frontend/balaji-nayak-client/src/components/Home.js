@@ -16,7 +16,7 @@ function Home() {
 
   const [data, setData] = useState({
     date: new Date().toISOString(),
-    periods: []
+    periods: [{}, {}, {}, {}, {}, {}, {}, {}]
   });
 
   const [periodData, setPeriodData] = useState({
@@ -63,6 +63,16 @@ function Home() {
     });
   };
 
+  const handleNextPeriod = (e) => {
+    if(currPeriod >= 8) return;
+    
+    setCurrPeriod(period => { return period + 1 })
+  }
+  const handlePreviousPeriod = (e) => {
+    if(currPeriod == 1) return;
+    setCurrPeriod(period => { return period - 1 })
+  }
+  
   console.log(periodData);
   return (
     <div className='HomeContainer'>
@@ -90,8 +100,8 @@ function Home() {
         <div className='mainContent'>
           <div className='enterAttendanceContainer'>
             <div className='enterAttendanceHeader'>
-              <button className='prevPeriod'>&lt;&lt; Previous Period</button>
-              <h2>Period - 1</h2>
+              <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
+              <h2>Period - {currPeriod}</h2>
             </div>
             <div className='enterAttendanceContentContainer'>
               <div className='enterAttendanceContent'>
@@ -129,19 +139,18 @@ function Home() {
                   </div>
 
                   <div className="year-group">
-                    <span className={isLeisure || classValue <= 10  ? "formDisabled" : ""} >YEAR</span>
+                    <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >YEAR</span>
                     <div className="years">
-                      <label className={isLeisure || classValue <= 10  ? "formDisabled" : ""} >
+                      <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
                         <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
                         1
                       </label>
-                      <label className={isLeisure  || classValue <= 10 ? "formDisabled" : ""} >
+                      <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
                         <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="2" />
                         2
                       </label>
                     </div>
                   </div>
-
 
                   <div className="section-group">
                     <span className={isLeisure ? "formDisabled" : ""} >SECTION</span>
@@ -169,7 +178,7 @@ function Home() {
                     </div>
                   </div>
 
-                  <button className='nextPeriod' type="button">Next Period &gt;&gt;</button>
+                  <button onClick={handleNextPeriod} className='nextPeriod' type="button">Next Period &gt;&gt;</button>
                 </div>
               </div>
             </div>
