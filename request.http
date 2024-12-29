@@ -19,24 +19,24 @@ content-type: application/json
 
 ###
 POST http://localhost:5000/months
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwYmY4NWE0OTM4YTlkODhkMTRhZjEiLCJpYXQiOjE3MzU0NDI0MzgsImV4cCI6MTczODAzNDQzOH0.6kEjKrffZioKqNiWQ95iwaUJ4XSRF7UlOs6mR3koszY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY4MzksImV4cCI6MTczODAzODgzOX0.bTcy248Zx89b_0qgjfRUwGdnox8khi_ZCHlGVWoBlro
 content-type: application/json
 
 
 {
-    "month": 6,
+    "month": 06,
     "year": 2023,
     "days": []
 }
 ###
 
 POST http://localhost:5000/months/day
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY1NTUsImV4cCI6MTczODAzODU1NX0.A8BIUoY6wtmmEAjuSRHEGPQXfjK-6C7a5Alihqt5vrc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY4MzksImV4cCI6MTczODAzODgzOX0.bTcy248Zx89b_0qgjfRUwGdnox8khi_ZCHlGVWoBlro
 content-type: application/json
 
 
 {
-    "date": "2024-12-30T00:00:00.000Z",
+    "date": "2024-11-30T00:00:00.000Z",
     "periods": [
         {
             "class": 1,
@@ -91,7 +91,7 @@ content-type: application/json
 ###
 
 GET http://localhost:5000/months
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTgzNzcsImV4cCI6MTczNTQxODQzN30.qpRNrOc5A2CaJVc6gI6v6gqHMHiWPn-mjoTkBgShtxI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY4MzksImV4cCI6MTczODAzODgzOX0.bTcy248Zx89b_0qgjfRUwGdnox8khi_ZCHlGVWoBlro
 content-type: application/json
 
 ###

@@ -5,9 +5,10 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const authenticateToken = require('../middleware/authenticateToken');
 
-router.get('/', authenticateToken, (req, res) => {
-    // req.send(req.user);
-    console.log(req.user)
+router.get('/', authenticateToken, async (req, res) => {
+    const { userId } = req.user;
+    const months = await Month.find({user: userId})
+    res.send(months)
 });
 
 //create new month
@@ -154,7 +155,7 @@ router.post('/day', authenticateToken, async (req, res) => {
         const month = date.getMonth() + 1;
 
         let monthDoc = await Month.findOne({ month, year, user: req.user.userId });
-        
+
         // if(!monthDoc.user){
         //     res.send({message:'fetched a month document of other user '})
         // }
@@ -177,7 +178,7 @@ router.post('/day', authenticateToken, async (req, res) => {
                     message: "You are not authorized to create a day."
                 });
             }
-        
+
             await monthDoc.save();
             return res.send(monthDoc);
         }
