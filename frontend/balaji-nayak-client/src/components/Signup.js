@@ -45,7 +45,7 @@ function Signup() {
         console.log('Success:', data);
         data.token && localStorage.setItem('BNtoken', data.token);
 
-        window.location.href = '/login';
+        window.location.href = '/';
         // Handle success (e.g., redirect to login page)
       } catch (error) {
         console.error('Error:', error);
