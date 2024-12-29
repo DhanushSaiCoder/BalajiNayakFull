@@ -101,7 +101,7 @@ function Home() {
                       <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
                       Leisure ?
                     </label>
-                    <label onChange={handleSubstitutionChange}  className={isLeisure ? "formDisabled" : ""}>
+                    <label onChange={handleSubstitutionChange} className={isLeisure ? "formDisabled" : ""}>
                       <input disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
                       Substitution ?
                     </label>
@@ -109,39 +109,39 @@ function Home() {
 
                   <label className={isLeisure ? "formDisabled" : ""} htmlFor="class">CLASS</label>
                   <input onChange={handleClassEntry} disabled={isLeisure} type="number" id="class" min="1" max="12" placeholder="1 - 12" />
-                  {classValue > 10 && (<>
-                    <div className="branch-group">
-                      <span className={isLeisure ? "formDisabled" : ""} >BRANCH</span>
-                      <div className="branches">
-                        <label className={isLeisure ? "formDisabled" : ""} >
-                          <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
-                          MPC
-                        </label>
-                        <label onChange={handleBranchChange} className={isLeisure ? "formDisabled" : ""} >
-                          <input disabled={isLeisure} type="radio" name="branch" value="BIPC" />
-                          BIPC
-                        </label>
-                        <label onChange={handleBranchChange} className={isLeisure ? "formDisabled" : ""} >
-                          <input disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
-                          MBIPC
-                        </label>
-                      </div>
-                    </div>
 
-                    <div className="year-group">
-                      <span className={isLeisure ? "formDisabled" : ""} >YEAR</span>
-                      <div className="years">
-                        <label className={isLeisure ? "formDisabled" : ""} >
-                          <input onChange={handleYearChange}  disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
-                          1
-                        </label>
-                        <label className={isLeisure ? "formDisabled" : ""} >
-                          <input onChange={handleYearChange}  disabled={isLeisure} type="radio" name="year" value="2" />
-                          2
-                        </label>
-                      </div>
+                  <div className="branch-group">
+                    <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >BRANCH</span>
+                    <div className="branches">
+                      <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                        <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
+                        MPC
+                      </label>
+                      <label onChange={handleBranchChange} className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                        <input disabled={isLeisure} type="radio" name="branch" value="BIPC" />
+                        BIPC
+                      </label>
+                      <label onChange={handleBranchChange} className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                        <input disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
+                        MBIPC
+                      </label>
                     </div>
-                  </>)}
+                  </div>
+
+                  <div className="year-group">
+                    <span className={isLeisure || classValue <= 10  ? "formDisabled" : ""} >YEAR</span>
+                    <div className="years">
+                      <label className={isLeisure || classValue <= 10  ? "formDisabled" : ""} >
+                        <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
+                        1
+                      </label>
+                      <label className={isLeisure  || classValue <= 10 ? "formDisabled" : ""} >
+                        <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="2" />
+                        2
+                      </label>
+                    </div>
+                  </div>
+
 
                   <div className="section-group">
                     <span className={isLeisure ? "formDisabled" : ""} >SECTION</span>
