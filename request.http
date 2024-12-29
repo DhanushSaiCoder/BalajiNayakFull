@@ -6,3 +6,95 @@ content-type: application/json
     "password": "123456",
     "pin": "1234"
 }
+
+###
+POST http://localhost:5000/auth/login
+content-type: application/json
+
+{
+    "email": "dhanushsai1467@gmail.com",
+    "password": "123456",
+    "pin": "1234"
+}
+
+###
+POST http://localhost:5000/months
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY4MzksImV4cCI6MTczODAzODgzOX0.bTcy248Zx89b_0qgjfRUwGdnox8khi_ZCHlGVWoBlro
+content-type: application/json
+
+
+{
+    "month": 06,
+    "year": 2023,
+    "days": []
+}
+###
+
+POST http://localhost:5000/months/day
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY4MzksImV4cCI6MTczODAzODgzOX0.bTcy248Zx89b_0qgjfRUwGdnox8khi_ZCHlGVWoBlro
+content-type: application/json
+
+
+{
+    "date": "2024-11-05T00:00:00.000Z",
+    "periods": [
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        },
+        {
+            "class": 1,
+            "section": "hh",
+            "isSubstitution": true,
+            "isLeisure": false
+        }
+    ]
+}
+###
+
+GET http://localhost:5000/months
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwY2MzMTNiYjZiYzc1ZDM4OTMwMjYiLCJpYXQiOjE3MzU0NDY4MzksImV4cCI6MTczODAzODgzOX0.bTcy248Zx89b_0qgjfRUwGdnox8khi_ZCHlGVWoBlro
+content-type: application/json
+
+###
+GET http://localhost:5000/months/day?date=2024-12-29T00:00:00.000Z
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MTkwODksImV4cCI6MTczNTQxOTE0OX0.dG6fZYSj2WJ6a5Wh-Ty9da3ObtQ6XlyGPUMwgR3kKRE
+content-type: application/json

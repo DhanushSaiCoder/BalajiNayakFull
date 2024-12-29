@@ -17,7 +17,13 @@ const monthSchema = new mongoose.Schema({
     month: { type: Number, required: true },
     year: { type: Number, required: true },
     days: [daySchema],
-});
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+    }, { timestamps: true }
+);
 
 const Month = mongoose.model('Month', monthSchema);
 
@@ -37,7 +43,9 @@ function validateMonth(month) {
                     })
                 ).required()
             })
-        ).required()
+        ).required(),
+        user: Joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
+
     });
 
     return schema.validate(month);
