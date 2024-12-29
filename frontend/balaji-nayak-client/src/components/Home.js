@@ -43,10 +43,12 @@ function Home() {
   };
 
   const handleBranchChange = (e) => {
+    updatePeriodData({ branch: e.target.value });
     setBranch(e.target.value);
   };
 
   const handleYearChange = (e) => {
+    updatePeriodData({ year: e.target.value });
     setYear(e.target.value);
   };
 
@@ -130,11 +132,11 @@ function Home() {
                       <span className={isLeisure ? "formDisabled" : ""} >YEAR</span>
                       <div className="years">
                         <label className={isLeisure ? "formDisabled" : ""} >
-                          <input disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
+                          <input onChange={handleYearChange}  disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
                           1
                         </label>
                         <label className={isLeisure ? "formDisabled" : ""} >
-                          <input disabled={isLeisure} type="radio" name="year" value="2" />
+                          <input onChange={handleYearChange}  disabled={isLeisure} type="radio" name="year" value="2" />
                           2
                         </label>
                       </div>
