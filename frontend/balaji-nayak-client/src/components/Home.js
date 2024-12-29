@@ -59,7 +59,7 @@ function Home() {
     });
   };
 
-  const handleNextPeriod = (e) => {
+  const handleNextPeriod = () => {
     if (currPeriod < 8) {
       setData(prevData => {
         const updatedPeriods = [...prevData.periods];
@@ -68,33 +68,43 @@ function Home() {
       });
       setCurrPeriod(period => period + 1);
     } else {
-      console.log(data);
-      fetch('http://localhost:5000/months/day', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
-        },
-        body: JSON.stringify(data)
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-          alert('Attendance entered successfully!');
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('Attendance entry failed!');
-        });
+      setData(prevData => {
+        const updatedPeriods = [...prevData.periods];
+        updatedPeriods[currPeriod - 1] = periodData;
+        return { ...prevData, periods: updatedPeriods };
+      });
+
+      console.log('final data', data);
+      setReadyToSubmit(true);
     }
   };
 
-  const handlePreviousPeriod = (e) => {
+  const handlePreviousPeriod = () => {
     if (currPeriod === 1) return;
     setCurrPeriod(period => period - 1);
   };
 
   console.log(data);
+
+  if (readyToSubmit) {
+    fetch('http://localhost:5000/months/day', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        setReadyToSubmit(false);
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Attendance entry failed!');
+      });
+  }
 
   return (
     <div className='HomeContainer'>
