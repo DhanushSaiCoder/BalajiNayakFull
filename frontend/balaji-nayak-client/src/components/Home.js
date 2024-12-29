@@ -36,27 +36,22 @@ function Home() {
     updatePeriodData({ isSubstitution: e.target.checked });
     setIsSubstitution(e.target.checked);
   };
-
   const handleClassEntry = (e) => {
     updatePeriodData({ class: e.target.value });
     setClassValue(e.target.value);
   };
-
   const handleBranchChange = (e) => {
     updatePeriodData({ branch: e.target.value });
     setBranch(e.target.value);
   };
-
   const handleYearChange = (e) => {
     updatePeriodData({ year: e.target.value });
     setYear(e.target.value);
   };
-
   const handleSectionChange = (e) => {
     updatePeriodData({ section: e.target.value });
     setSection(e.target.value);
   };
-
   const updatePeriodData = (updatedData) => {
     setPeriodData((prev) => {
       return { ...prev, ...updatedData };
@@ -64,16 +59,23 @@ function Home() {
   };
 
   const handleNextPeriod = (e) => {
-    if(currPeriod >= 8) return;
-    
+    if (currPeriod >= 8) return;
+    // data.periods[currPeriod-1] should be periodData
     setCurrPeriod(period => { return period + 1 })
+    setData(prevData => {
+      const updatedPeriods = [...prevData.periods];
+      updatedPeriods[currPeriod - 1] = periodData;
+      return { ...prevData, periods: updatedPeriods };
+    });
   }
   const handlePreviousPeriod = (e) => {
-    if(currPeriod == 1) return;
+    if (currPeriod === 1) return;
     setCurrPeriod(period => { return period - 1 })
   }
-  
-  console.log(periodData);
+
+  // console.log(periodData);
+  console.log(data)
+
   return (
     <div className='HomeContainer'>
       <div className='leftNav'>
