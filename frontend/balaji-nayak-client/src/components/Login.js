@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 function Login() {
+  if (localStorage.getItem('BNtoken')) {
+    window.location.href = '/'
+  }
   const [formData, setFormData] = useState({
     email: '',
     password: ''
