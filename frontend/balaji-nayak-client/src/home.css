@@ -12,7 +12,7 @@ body {
     background-color: rgb(255, 254, 248);
   }
 .leftNav{
-    width: 20vw;
+    width: 15vw;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -29,16 +29,24 @@ body {
     justify-content: center;
     align-items: center;
     height: 8%;
-    border: 2px solid red;
+    padding: 20px 10px;
+    text-align: center;
+    border-bottom: 1.5px solid #3b3b3b;
+    /* border: 2px solid red; */
 } 
 .navContentDiv
 {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    flex-direction: column;
     height: 84%;
-    border: 2px solid red;
+    gap: 20px;
+    padding-top: 30px;
+    border-bottom: 1.5px solid #3b3b3b;
+
+    /* border: 2px solid red; */
 } 
 
 .navFooterDiv
@@ -48,6 +56,30 @@ body {
     justify-content: center;
     align-items: center;
     height: 8%;
-    border: 2px solid red;
+    /* border: 2px solid red; */
 } 
 
+.navButtons{
+    width: 70%;
+    height: 50px;
+    /* border: 2px solid red; */
+    text-align: left;
+    padding-left: 20px;
+    border-radius: 10px;
+    border:none;
+    background-color: transparent;
+    color: rgba(255, 254, 248, 0.587);
+    font-size: large;
+    cursor:pointer;
+    font-weight: 500;
+}
+.navButtons:hover{
+    background-color: #3b3b3b8c;
+}
+.activeNavBtn{
+    background-color: #3b3b3b;
+    color: rgb(255, 254, 248);
+}
+.activeNavBtn:hover{
+    background-color: #3b3b3b;
+}
