@@ -13,6 +13,7 @@ function Home() {
   const [branch, setBranch] = useState('MPC');
   const [year, setYear] = useState(1);
   const [section, setSection] = useState('A');
+  const [readyToSubmit, setReadyToSubmit] = useState(false);
 
   const [data, setData] = useState({
     date: new Date().toISOString(),
@@ -59,22 +60,41 @@ function Home() {
   };
 
   const handleNextPeriod = (e) => {
-    if (currPeriod >= 8) return;
-    // data.periods[currPeriod-1] should be periodData
-    setCurrPeriod(period => { return period + 1 })
-    setData(prevData => {
-      const updatedPeriods = [...prevData.periods];
-      updatedPeriods[currPeriod - 1] = periodData;
-      return { ...prevData, periods: updatedPeriods };
-    });
-  }
+    if (currPeriod < 8) {
+      setData(prevData => {
+        const updatedPeriods = [...prevData.periods];
+        updatedPeriods[currPeriod - 1] = periodData;
+        return { ...prevData, periods: updatedPeriods };
+      });
+      setCurrPeriod(period => period + 1);
+    } else {
+      console.log(data);
+      fetch('http://localhost:5000/months/day', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          alert('Attendance entered successfully!');
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Attendance entry failed!');
+        });
+    }
+  };
+
   const handlePreviousPeriod = (e) => {
     if (currPeriod === 1) return;
-    setCurrPeriod(period => { return period - 1 })
-  }
+    setCurrPeriod(period => period - 1);
+  };
 
-  // console.log(periodData);
-  console.log(data)
+  console.log(data);
 
   return (
     <div className='HomeContainer'>
@@ -113,8 +133,8 @@ function Home() {
                       <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
                       Leisure ?
                     </label>
-                    <label onChange={handleSubstitutionChange} className={isLeisure ? "formDisabled" : ""}>
-                      <input disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
+                    <label className={isLeisure ? "formDisabled" : ""}>
+                      <input onChange={handleSubstitutionChange} disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
                       Substitution ?
                     </label>
                   </div>
@@ -129,12 +149,12 @@ function Home() {
                         <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
                         MPC
                       </label>
-                      <label onChange={handleBranchChange} className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                        <input disabled={isLeisure} type="radio" name="branch" value="BIPC" />
+                      <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                        <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="BIPC" />
                         BIPC
                       </label>
-                      <label onChange={handleBranchChange} className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                        <input disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
+                      <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                        <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
                         MBIPC
                       </label>
                     </div>
