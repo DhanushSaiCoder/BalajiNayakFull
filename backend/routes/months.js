@@ -17,7 +17,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
         console.log('Received POST request with body:', req.body);
 
-        const existingMonth = await Month.findOne({ month: req.body.month, year: req.body.year, user: req.user._id });
+        const existingMonth = await Month.findOne({ month: req.body.month, year: req.body.year, user: req.user.userId });
 
         if (existingMonth) {
             console.log('Month already exists:', existingMonth);
@@ -42,7 +42,7 @@ router.post('/', authenticateToken, async (req, res) => {
             month: req.body.month,
             year: req.body.year,
             days: req.body.days,
-            user: req.user._id
+            user: req.user.userId
         });
 
         console.log('Saving month:', month);
@@ -70,7 +70,7 @@ router.get('/day', authenticateToken, async (req, res) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
 
-        const monthDoc = await Month.findOne({ month, year, user: req.user._id });
+        const monthDoc = await Month.findOne({ month, year, user: req.user.userId });
         if (!monthDoc) {
             return res.status(404).send({
                 short: "monthNotFound",
@@ -85,7 +85,7 @@ router.get('/day', authenticateToken, async (req, res) => {
                 message: "Day not found."
             });
         }
-        if (!req.user || !req.user._id || !monthDoc.user || req.user._id.toString() !== monthDoc.user.toString()) {
+        if (!req.user || !req.user.userId || !monthDoc.user || req.user.userId.toString() !== monthDoc.user.toString()) {
             return res.status(403).send({
                 short: "unauthorized",
                 message: "You are not authorized to create a day."
@@ -153,27 +153,31 @@ router.post('/day', authenticateToken, async (req, res) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
 
-        let monthDoc = await Month.findOne({ month, year, user: req.user._id });
+        let monthDoc = await Month.findOne({ month, year, user: req.user.userId });
+        
+        // if(!monthDoc.user){
+        //     res.send({message:'fetched a month document of other user '})
+        // }
 
         // If month document doesn't exist, create one
         if (!monthDoc) {
-            monthDoc = createMonthDocument();
-            monthDoc.month = month;
-            monthDoc.year = year;
-            monthDoc.user = req.user._id;
-            monthDoc.days.push(req.body);
+            monthDoc = new Month({
+                month: month,
+                year: year,
+                user: req.user.userId,
+                days: [req.body]
+            });
             console.log('Creating new month:', monthDoc);
-            
+            console.log(req.user);
             if (req.user) {
-                monthDoc.user = req.user._id;
-            }
-            else {
+                monthDoc.user = req.user.userId;
+            } else {
                 return res.status(401).send({
                     short: "unauthorized",
                     message: "You are not authorized to create a day."
                 });
             }
-
+        
             await monthDoc.save();
             return res.send(monthDoc);
         }
@@ -185,7 +189,7 @@ router.post('/day', authenticateToken, async (req, res) => {
         if (dayIndex !== -1) {
             monthDoc.days[dayIndex] = req.body;
             console.log('After replacing the periods:', monthDoc);
-            if (!req.user || !req.user._id || !monthDoc.user || req.user._id.toString() !== monthDoc.user.toString()) {
+            if (!req.user || !req.user.userId || !monthDoc.user || req.user.userId.toString() !== monthDoc.user.toString()) {
                 return res.status(403).send({
                     short: "unauthorized",
                     message: "You are not authorized to create a day."
@@ -197,7 +201,7 @@ router.post('/day', authenticateToken, async (req, res) => {
 
         monthDoc.days.push(req.body);
         console.log('Saving month:', monthDoc);
-        if (!req.user || !req.user._id || !monthDoc.user || req.user._id.toString() !== monthDoc.user.toString()) {
+        if (!req.user || !req.user.userId || !monthDoc.user || req.user.userId.toString() !== monthDoc.user.toString()) {
             return res.status(403).send({
                 short: "unauthorized",
                 message: "You are not authorized to create a day."
