@@ -7,8 +7,8 @@ const authenticateToken = require('../middleware/authenticateToken');
 
 router.get('/', authenticateToken, async (req, res) => {
     const { userId } = req.user;
-    const months = await Month.find({user: userId})
-    res.send(months)
+    const months = await Month.find({ user: userId })
+    res.json({ userId, months })
 });
 
 //create new month
