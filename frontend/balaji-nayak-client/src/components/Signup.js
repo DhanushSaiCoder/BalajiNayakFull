@@ -41,7 +41,9 @@ function Signup() {
         }
 
         const data = await response.json();
+
         console.log('Success:', data);
+        data.token && localStorage.setItem('BNtoken', data.token);
         // Handle success (e.g., redirect to login page)
       } catch (error) {
         console.error('Error:', error);
