@@ -1,6 +1,8 @@
+// ROUGH DRAFT
+// This is a rough draft of the plan.js file. This file will be used to create the plan for the project.
 
-let arr = [{},{},{},{},{},{},{},{}]
-arr = arr.map((i) => {
+let periods = [{},{},{},{},{},{},{},{}]
+periods = periods.map((i) => {
     return {
         "class": 1,
         "section":'A',
@@ -8,7 +10,8 @@ arr = arr.map((i) => {
         "isLeisure": false
     }
 })
-console.log(arr)
-// for (let i = 0; i < arr.length; i++) {
-//     console.log(arr[i])
-// }
+console.log(periods)
+
+let currentDate = new Date();
+let isoDate = currentDate.toISOString();
+console.log(isoDate);
