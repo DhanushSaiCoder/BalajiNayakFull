@@ -140,7 +140,7 @@ function Signup() {
           <div style={styles.inputGroup}>
             <label style={styles.label}>PIN:</label>
             <input
-              type="text"
+              type="number"
               name="pin"
               value={formData.pin}
               onChange={handleChange}
