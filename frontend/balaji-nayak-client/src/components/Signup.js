@@ -22,8 +22,8 @@ function Signup() {
     if (step === 1) {
       setStep(2);
     } else {
-      // POST to /auth/signup
 
+      // POST to /auth/signup
       try {
         const response = await fetch('/auth/signup', {
           method: 'POST',

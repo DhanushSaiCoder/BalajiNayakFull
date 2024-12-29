@@ -1,4 +1,3 @@
-// filepath: src/components/About.js
 import React from 'react';
 
 function Home() {
