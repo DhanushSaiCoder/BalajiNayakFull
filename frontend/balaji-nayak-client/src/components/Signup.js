@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-
 function Signup() {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    pin: ''
   });
+  const [step, setStep] = useState(1);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,10 +17,37 @@ function Signup() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form data submitted:', formData);
+    if (step === 1) {
+      setStep(2);
+    } else {
+      // POST to /auth/signup
+
+      try {
+        const response = await fetch('/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+        const data = await response.json();
+
+          console.log(data.message)
+          // throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Success:', data);
+        // Handle success (e.g., redirect to login page)
+      } catch (error) {
+        console.error('Error:', error);
+        // Handle error (e.g., show error message)
+      }
+    }
   };
 
   const styles = {
@@ -65,7 +93,7 @@ function Signup() {
     title: {
       marginBottom: '20px',
     },
-    linksDiv:{
+    linksDiv: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -79,32 +107,51 @@ function Signup() {
     <div style={styles.container}>
       <h1 style={styles.title}>Signup</h1>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            style={styles.input}
-            placeholder='eg. abc@gmail.com'
-
-          />
-        </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            style={styles.input}
-          />
-        </div>
-        <button type="submit" style={styles.button}>Sign Up</button>
-        <div  style={styles.linksDiv}>
-          <p>Already had an account? </p><Link to="/login">log in</Link>
-        </div>
+        {step === 1 && (
+          <>
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder='eg. abc@gmail.com'
+              />
+            </div>
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Password:</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                style={styles.input}
+              />
+            </div>
+          </>
+        )}
+        {step === 2 && (
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>PIN:</label>
+            <input
+              type="text"
+              name="pin"
+              value={formData.pin}
+              onChange={handleChange}
+              style={styles.input}
+            />
+          </div>
+        )}
+        <button type="submit" style={styles.button}>
+          {step === 1 ? 'Next' : 'Sign Up'}
+        </button>
+        {step === 1 && (
+          <div style={styles.linksDiv}>
+            <p>Already had an account? </p><Link to="/login">log in</Link>
+          </div>
+        )}
       </form>
     </div>
   );
