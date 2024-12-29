@@ -70,7 +70,7 @@ router.get('/day', authenticateToken, async (req, res) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
 
-        const monthDoc = await Month.findOne({ month, year });
+        const monthDoc = await Month.findOne({ month, year, user: req.user._id });
         if (!monthDoc) {
             return res.status(404).send({
                 short: "monthNotFound",
@@ -153,16 +153,17 @@ router.post('/day', authenticateToken, async (req, res) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
 
-        let monthDoc = await Month.findOne({ month, year });
+        let monthDoc = await Month.findOne({ month, year, user: req.user._id });
 
         // If month document doesn't exist, create one
         if (!monthDoc) {
             monthDoc = createMonthDocument();
             monthDoc.month = month;
             monthDoc.year = year;
+            monthDoc.user = req.user._id;
             monthDoc.days.push(req.body);
             console.log('Creating new month:', monthDoc);
-
+            
             if (req.user) {
                 monthDoc.user = req.user._id;
             }

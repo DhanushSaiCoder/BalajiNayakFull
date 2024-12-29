@@ -1,3 +1,13 @@
+POST http://localhost:5000/auth/signup
+content-type: application/json
+
+{
+    "email": "dhanushsai1467@gmail.com",
+    "password": "123456",
+    "pin": "1234"
+}
+
+###
 POST http://localhost:5000/auth/login
 content-type: application/json
 
@@ -9,7 +19,7 @@ content-type: application/json
 
 ###
 POST http://localhost:5000/months
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MjAwMzMsImV4cCI6MTczODAxMjAzM30.f3MxHoZ0lhTlMmRYNose7iQl9lY2ukz9e_5RtTO9WK8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwYmY4NWE0OTM4YTlkODhkMTRhZjEiLCJpYXQiOjE3MzU0NDI0MzgsImV4cCI6MTczODAzNDQzOH0.6kEjKrffZioKqNiWQ95iwaUJ4XSRF7UlOs6mR3koszY
 content-type: application/json
 
 
@@ -22,12 +32,12 @@ content-type: application/json
 
 
 POST http://localhost:5000/months/day
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwNWI0OGE1Y2I0MWY0NjJjODI4MGQiLCJpYXQiOjE3MzU0MjAwMzMsImV4cCI6MTczODAxMjAzM30.f3MxHoZ0lhTlMmRYNose7iQl9lY2ukz9e_5RtTO9WK8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzcwYmY4NWE0OTM4YTlkODhkMTRhZjEiLCJpYXQiOjE3MzU0NDI0MzgsImV4cCI6MTczODAzNDQzOH0.6kEjKrffZioKqNiWQ95iwaUJ4XSRF7UlOs6mR3koszY
 content-type: application/json
 
 
 {
-    "date": "2024-01-11T00:00:00.000Z",
+    "date": "2024-12-30T00:00:00.000Z",
     "periods": [
         {
             "class": 1,
