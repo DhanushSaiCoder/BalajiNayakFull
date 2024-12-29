@@ -39,6 +39,17 @@ function Home() {
             <div className='enterAttendanceContentContainer'>
               <div className='enterAttendanceContent'>
                 <div className="container">
+                <div className="checkbox-group">
+                    <label>
+                      <input className='checkboxes' type="checkbox" name="leisure" />
+                      Leisure ?
+                    </label>
+                    <label>
+                      <input className='checkboxes' type="checkbox" name="substitution" />
+                      Substitution ?
+                    </label>
+                  </div>
+
                   <label htmlFor="class">CLASS</label>
                   <input type="number" id="class" min="1" max="12" placeholder="1 - 12" />
                   
@@ -103,17 +114,7 @@ function Home() {
                     </div>
                   </div>
 
-                  <div className="checkbox-group">
-                    <label>
-                      <input className='checkboxes' type="checkbox" name="substitution" />
-                      Substitution ?
-                    </label>
-                    <label>
-                      <input className='checkboxes' type="checkbox" name="leisure" />
-                      Leisure ?
-                    </label>
-                  </div>
-
+                  
                   <button className='nextPeriod' type="button">Next Period &gt;&gt;</button>
                 </div>
               </div></div>

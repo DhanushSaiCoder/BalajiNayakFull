@@ -145,6 +145,8 @@ main {
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }
 .enterAttendanceHeader {
     width: 100%;
@@ -168,7 +170,8 @@ main {
 .prevPeriod {
     padding: 10px 15px;
     border: none;
-    background-color: #0000003f;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
     border-radius: 5px;
     position: absolute;
     top: 50%;
@@ -179,7 +182,9 @@ main {
 .nextPeriod{
     padding: 10px 15px;
     border: none;
-    background-color: #0000003f;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
+
     border-radius: 5px;
     cursor: pointer;
 
@@ -264,6 +269,6 @@ input[type="number"] {
     cursor: pointer;
 }
 
-.nextPeriod:hover {
-    background-color: #bfbfbf;
+.nextPeriod:hover,.prevPeriod:hover {
+    background-color: #359b52;
 }
