@@ -14,7 +14,7 @@ function Home() {
   const [section, setSection] = useState('A');
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
+  const [dayReport, setDayReport] = useState([]);
   const [data, setData] = useState({
     date: new Date().toISOString(),
     periods: [{}, {}, {}, {}, {}, {}, {}, {}]
@@ -113,7 +113,6 @@ function Home() {
 
   const saveData = (data) => {
     const monthId = data._id;
-    console.log('monthId:', monthId);
 
     // Fetch day by sending GET request to /months/day with JWT token in headers
     fetch(`http://localhost:5000/months/${monthId}`, {
@@ -125,7 +124,10 @@ function Home() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Day:', data);//month data
+        const date = new Date().toISOString().split('T')[0]; // Extract only the date part
+        const day = data.days.find(day => day.date.split('T')[0] === date) || { 'day not found': true };
+        const periods = day.periods;
+        generateDayReport(periods);
 
       })
       .catch((error) => {
@@ -134,6 +136,11 @@ function Home() {
       });
   };
 
+  const generateDayReport = (periods) => {
+    const report = periods
+    console.log('report: ', report)
+    setDayReport(report);
+  }
   return (
     <div className='HomeContainer'>
       <div className='leftNav'>
@@ -151,9 +158,9 @@ function Home() {
 
       <main>
         <div className='mainHeader'>
-          <button onClick={()=> {
+          <button onClick={() => {
             localStorage.removeItem('BNtoken')
-            window.location.href='/login'
+            window.location.href = '/login'
           }} className='logoutBtn'>Log Out</button>
         </div>
         <div className='contentHeader'>
@@ -248,6 +255,39 @@ function Home() {
                   </div>
 
                 </div>
+              )}
+              {dayReport.length > 0 && (
+                <div className='dayReport'>
+                  <h3>Day Report</h3>
+                  <table className='dayReportTable'>
+                    <thead>
+                      <tr>
+                        <th>Peroiod</th>
+                        <th>class</th>
+                        <th>branch</th>
+                        <th>year</th>
+                        <th>section</th>
+                        <th>Substitution</th>
+                        <th>Leisure</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      {dayReport.map((report, index) => (
+                        <tr key={index}>
+                          <td><b>{index + 1}</b></td>
+                          <td>{report.class}</td>
+                          <td>{report.branch}</td>
+                          <td>{report.year}</td>
+                          <td>{report.section}</td>
+                          <td>{report.isSubstitution}</td>
+                          <td>{report.isLeisure}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
               )}
             </div>
           </div>

@@ -146,7 +146,6 @@ main {
     justify-content: flex-start;
     flex-direction: column;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
 }
 .enterAttendanceHeader {
     width: 100%;
@@ -179,7 +178,7 @@ main {
     transform: translate(-50%, -50%);
     cursor: pointer;
 }
-.nextPeriod{
+.nextPeriod {
     padding: 10px 15px;
     border: none;
     background-color: #06bd3a;
@@ -187,7 +186,6 @@ main {
 
     border-radius: 5px;
     cursor: pointer;
-
 }
 .enterAttendanceContentContainer {
     width: 100%;
@@ -210,7 +208,7 @@ main {
 .container {
     background-color: #fff;
     padding: 20px;
-height: auto;
+    height: auto;
     border-radius: 8px;
     width: 90%;
 }
@@ -231,20 +229,27 @@ input[type="number"] {
     font-size: 14px;
 }
 
-.section-group span,.branch-group span,.year-group span {
+.section-group span,
+.branch-group span,
+.year-group span {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
     color: #5a3126;
 }
 
-.sections,.branches,.years {
+.sections,
+.branches,
+.years {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
 }
 
-.sections label,.branches label, .years label,label {
+.sections label,
+.branches label,
+.years label,
+label {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -261,18 +266,71 @@ input[type="number"] {
     font-size: 14px;
     margin-bottom: 5px;
     color: #5a3126;
-    
 }
 
-.checkboxes{
-    margin-right:5px;
+.checkboxes {
+    margin-right: 5px;
     cursor: pointer;
 }
 
-.nextPeriod:hover,.prevPeriod:hover {
+.nextPeriod:hover,
+.prevPeriod:hover {
     background-color: #359b52;
 }
 .formDisabled {
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.35;
+}
+
+.dayReportTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    font-family: "Arial", sans-serif;
+    text-align: left;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dayReportTable thead {
+    background-color: #f4f4f4; /* Soft gray for light theme */
+    color: #333; /* Dark text for contrast */
+}
+
+.dayReportTable th,
+.dayReportTable td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.dayReportTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for alternating rows */
+}
+
+.dayReportTable tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* Pure white for alternating rows */
+}
+
+.dayReportTable tbody tr:hover {
+    background-color: #f1f5f8; /* Subtle blue-gray hover effect */
+    cursor: pointer;
+}
+
+.dayReportTable th {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+}
+
+.dayReportTable tbody td {
+    color: #555; /* Slightly lighter text for balance */
+}
+
+.dayReportTable caption {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #444;
+    font-weight: bold;
 }
