@@ -156,6 +156,8 @@ function Home() {
       })
         .then(response => response.json())
         .then(data => {
+          console.log('Got Users months.', data.months)
+
           storeUserMonths(data);
         }
         )
@@ -233,9 +235,21 @@ function Home() {
         date: todate
       }
     })
+
+
   }
-  
-  
+
+  useEffect(() => {
+    if (Object.keys(fromDateObj).length === 0) return;
+    console.log('fromDateObj: ', fromDateObj);
+  }, [fromDateObj]);
+
+
+  useEffect(() => {
+    if (Object.keys(toDateObj).length === 0) return;
+    console.log('toDateObj: ', toDateObj);
+  }, [toDateObj]);
+
 
   return (
     <div className='HomeContainer'>
