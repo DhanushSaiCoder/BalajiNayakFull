@@ -387,6 +387,8 @@ label {
     align-items: center;
     flex-direction: space-between;
     justify-content: center;
+    border-radius: 20px;
+
     /* border: 1px solid red; */
 }
 .reportsHeaderInputDiv {
@@ -395,7 +397,8 @@ label {
     border-top: 1px solid #00000018;
     border-bottom: 1px solid #00000018;
     border-right: 1px solid #00000018;
-    
+    border-left: 1px solid #00000018;
+    background-color: rgb(212, 211, 208);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -430,12 +433,19 @@ label {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Glow effect */
     background-color: #fff; /* Ensure background stays bright */
 }
-#fromDiv,#toDiv{
+#fromDiv {
     width: 40%;
+    border-radius: 20px 0 0 20px;
 }
-#getReportBtnDiv{
+#toDiv {
+    width: 40%;
+    border-radius: 0px;
+
+}
+#getReportBtnDiv {
     width: 20%;
-    border-right: none;
+    border-radius: 0 20px 20px 0;
+
 }
 #getReportBtnDiv button {
     padding: 13px 25px;
@@ -444,7 +454,7 @@ label {
     color: rgb(255, 254, 248);
     border-radius: 5px;
     cursor: pointer;
-    transition:  transform 0.2s;
+    transition: transform 0.2s;
 }
 
 #getReportBtnDiv button:hover {

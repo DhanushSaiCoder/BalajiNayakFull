@@ -249,13 +249,13 @@ function Home() {
                   <div id="fromDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
                       FROM:
-                      <input onChange={handleFromDateChange} className='dataInp' type="date" id="from" />
+                      <input defaultValue={fromDate} onChange={handleFromDateChange} className='dataInp' type="date" id="from" />
                     </label>
                   </div>
                   <div id="toDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
                       TO:
-                      <input onChange={handleToDateChange}  className='dataInp' type="date" id="from" />
+                      <input  defaultValue={fromDate} onChange={handleToDateChange}  className='dataInp' type="date" id="from" />
                     </label>
                   </div>
                   <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
