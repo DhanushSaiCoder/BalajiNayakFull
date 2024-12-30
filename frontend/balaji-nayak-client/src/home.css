@@ -322,10 +322,14 @@ label {
     text-transform: uppercase;
     letter-spacing: 0.03em;
     font-weight: 600;
+    text-align: center;
+
 }
 
 .dayReportTable tbody td {
     color: #555; /* Slightly lighter text for balance */
+    text-align: center;
+
 }
 
 .dayReportTable caption {
@@ -336,4 +340,9 @@ label {
 }
 .leisureRow{
     background-color: rgba(255, 0, 0, 0.237);
+    text-align: center;
+}
+.substitutionRow{
+    background-color: rgba(255, 238, 0, 0.237);
+    text-align: center;
 }

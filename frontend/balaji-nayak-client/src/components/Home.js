@@ -141,6 +141,7 @@ function Home() {
     console.log('report: ', report)
     setDayReport(report);
   }
+
   return (
     <div className='HomeContainer'>
       <div className='leftNav'>
@@ -180,11 +181,12 @@ function Home() {
                 <div className='enterAttendanceContent'>
                   <div className='container'>
                     <div className="checkbox-group">
-                      <label>
+                    <label style={{color: 'rgba(255, 78, 33, 0.99)'}}>
+
                         <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
                         Leisure ?
                       </label>
-                      <label className={isLeisure ? "formDisabled" : ""}>
+                      <label style={{color: 'rgb(0, 187, 255)'}} className={isLeisure ? "formDisabled" : ""}>
                         <input onChange={handleSubstitutionChange} disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
                         Substitution ?
                       </label>
@@ -277,10 +279,10 @@ function Home() {
                           {period.isLeisure && <td className='leisureRow' colSpan={4}><b>Leisure</b></td>}
                           {!period.isLeisure && (
                             <>
-                              <td>{period.class}</td>
-                              <td>{period.class > 10 ? period.branch : '-'}</td>
-                              <td>{period.class > 10 ? period.year : '-'}</td>
-                              <td>{period.isSubstitution ? 'Yes' : 'No'}</td>
+                              <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class + " " + period.section }</td>
+                              <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.branch : '-'}</td>
+                              <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.year : '-'}</td>
+                              <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.isSubstitution ? 'Yes' : 'No'}</td>
                             </>
                           )}
 
