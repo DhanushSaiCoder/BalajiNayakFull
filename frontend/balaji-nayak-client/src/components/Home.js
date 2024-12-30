@@ -32,6 +32,9 @@ function Home() {
 
   //report states:
   const [userMonths, setUserMonths] = useState([])
+
+  const [reqMonths, setReqMonths] = useState([])
+
   const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
   const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
 
@@ -242,6 +245,7 @@ function Home() {
   useEffect(() => {
     if (Object.keys(fromDateObj).length === 0) return;
     console.log('fromDateObj: ', fromDateObj);
+    addValidMonthsFromDate(fromDateObj)
   }, [fromDateObj]);
 
 
@@ -250,6 +254,25 @@ function Home() {
     console.log('toDateObj: ', toDateObj);
   }, [toDateObj]);
 
+  const addValidMonthsFromDate = (dateObj) => {
+    setReqMonths((prev) => {
+      const newMonths = userMonths.filter((month) => {
+        return (
+          month.year > dateObj.year ||
+          (month.year === dateObj.year && month.month >= dateObj.month)
+        );
+      });
+
+      return [...prev, ...newMonths];
+    });
+  };
+
+
+  useEffect(() => {
+    // if(reqMonths.length == 0 ) return;
+    console.log('reqMonths: ', reqMonths)
+
+  }, [reqMonths])
 
   return (
     <div className='HomeContainer'>
