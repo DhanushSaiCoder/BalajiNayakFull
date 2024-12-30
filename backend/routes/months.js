@@ -223,7 +223,7 @@ router.post('/day', authenticateToken, async (req, res) => {
         console.log('Error:', ex.message);
         res.status(500).send('Something failed.');
     }
-});
+}); 
 
 function createMonthDocument() {
     const currentDate = new Date();

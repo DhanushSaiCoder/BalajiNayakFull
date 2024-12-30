@@ -28,7 +28,12 @@ function Home() {
     branch,
     year
   });
-
+  const currDate = new Date();
+  const formattedDate = currDate.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
   const handleLeisureChange = (e) => {
     updatePeriodData({ isLeisure: e.target.checked });
     setIsLeisure(e.target.checked);
@@ -121,7 +126,7 @@ function Home() {
       .then(response => response.json())
       .then(data => {
         console.log('Day:', data);//month data
-        
+
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -146,11 +151,14 @@ function Home() {
 
       <main>
         <div className='mainHeader'>
-          <button className='logoutBtn'>Log Out</button>
+          <button onClick={()=> {
+            localStorage.removeItem('BNtoken')
+            window.location.href='/login'
+          }} className='logoutBtn'>Log Out</button>
         </div>
         <div className='contentHeader'>
           <h1>Enter Attendance</h1>
-          <p className='secondaryTxt'>Date: 29-12-24</p>
+          <p className='secondaryTxt'>Date: {formattedDate}</p>
         </div>
         <div className='mainContent'>
           <div className='enterAttendanceContainer'>
