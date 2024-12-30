@@ -178,7 +178,7 @@ main {
     transform: translate(-50%, -50%);
     cursor: pointer;
 }
-.nextPeriod {
+.nextPeriod,.okayBtn,.noBtn {
     padding: 10px 15px;
     border: none;
     background-color: #06bd3a;
@@ -292,6 +292,8 @@ label {
     background-color: #ffffff;
     border: 1px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    
 }
 
 .dayReportTable thead {
@@ -345,4 +347,25 @@ label {
 .substitutionRow{
     background-color: rgba(255, 238, 0, 0.237);
     text-align: center;
+}
+.dayReport{
+    display: flex;align-items: flex-start;justify-content: center;
+    flex-direction: column;
+    text-align: left;
+}
+.dayReport h3{
+    opacity: 0.6;
+}
+.okayBtn,.noBtn{
+    padding: 10px 40px;
+}
+.noBtn{
+    background-color: #ff4e0e;
+}
+.okayBtnDiv{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
 }
