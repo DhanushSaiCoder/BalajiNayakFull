@@ -266,22 +266,24 @@ function Home() {
                         <th>class</th>
                         <th>branch</th>
                         <th>year</th>
-                        <th>section</th>
                         <th>Substitution</th>
-                        <th>Leisure</th>
                       </tr>
                     </thead>
                     <tbody>
 
-                      {dayReport.map((report, index) => (
+                      {dayReport.map((period, index) => (
                         <tr key={index}>
                           <td><b>{index + 1}</b></td>
-                          <td>{report.class}</td>
-                          <td>{report.branch}</td>
-                          <td>{report.year}</td>
-                          <td>{report.section}</td>
-                          <td>{report.isSubstitution}</td>
-                          <td>{report.isLeisure}</td>
+                          {period.isLeisure && <td className='leisureRow' colSpan={4}><b>Leisure</b></td>}
+                          {!period.isLeisure && (
+                            <>
+                              <td>{period.class}</td>
+                              <td>{period.class > 10 ? period.branch : '-'}</td>
+                              <td>{period.class > 10 ? period.year : '-'}</td>
+                              <td>{period.isSubstitution ? 'Yes' : 'No'}</td>
+                            </>
+                          )}
+
                         </tr>
                       ))}
                     </tbody>
