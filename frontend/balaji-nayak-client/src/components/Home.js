@@ -189,7 +189,26 @@ function Home() {
           {currPage === 'reports' && (
             <>
               <div className='reportsContainer'>
-                <div className='reportsHeader'></div>
+                <div className='reportsHeader'>
+                  <div id="fromDiv" className='reportsHeaderInputDiv'>
+                    <label htmlFor="from">
+                      FROM: 
+                      <input className='dataInp' type="date" id="from" />
+                    </label>
+                  </div>
+                  <div id="toDiv"  className='reportsHeaderInputDiv'>
+                  <label htmlFor="from">
+                      TO: 
+                      <input className='dataInp' type="date" id="from" />
+                    </label>
+                  </div>
+                  <div id="getReportBtnDiv"  className='reportsHeaderInputDiv'>
+                    <button>Get Report</button>
+                  </div>
+                </div>
+                <div className='reportsContent'>
+                  <h1>Reports</h1>
+                </div>
               </div>
             </>
           )}

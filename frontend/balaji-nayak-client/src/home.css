@@ -178,7 +178,9 @@ main {
     transform: translate(-50%, -50%);
     cursor: pointer;
 }
-.nextPeriod,.okayBtn,.noBtn {
+.nextPeriod,
+.okayBtn,
+.noBtn {
     padding: 10px 15px;
     border: none;
     background-color: #06bd3a;
@@ -292,8 +294,6 @@ label {
     background-color: #ffffff;
     border: 1px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-    
 }
 
 .dayReportTable thead {
@@ -325,13 +325,11 @@ label {
     letter-spacing: 0.03em;
     font-weight: 600;
     text-align: center;
-
 }
 
 .dayReportTable tbody td {
     color: #555; /* Slightly lighter text for balance */
     text-align: center;
-
 }
 
 .dayReportTable caption {
@@ -340,36 +338,39 @@ label {
     color: #444;
     font-weight: bold;
 }
-.leisureRow{
+.leisureRow {
     background-color: rgba(255, 0, 0, 0.237);
     text-align: center;
 }
-.substitutionRow{
+.substitutionRow {
     background-color: rgba(255, 238, 0, 0.237);
     text-align: center;
 }
-.dayReport{
-    display: flex;align-items: flex-start;justify-content: center;
+.dayReport {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     flex-direction: column;
     text-align: left;
 }
-.dayReport h3{
+.dayReport h3 {
     opacity: 0.6;
 }
-.okayBtn,.noBtn{
+.okayBtn,
+.noBtn {
     padding: 10px 40px;
 }
-.noBtn{
+.noBtn {
     background-color: #ff4e0e;
 }
-.okayBtnDiv{
+.okayBtnDiv {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
 }
-.reportsContainer{
+.reportsContainer {
     width: 100%;
     display: flex;
     align-items: center;
@@ -379,12 +380,74 @@ label {
     /* border: 1.5px solid red; */
     height: 100%;
 }
-.reportsHeader{
+.reportsHeader {
     height: 13%;
-    width: 100%;    
+    width: 100%;
     display: flex;
     align-items: center;
     flex-direction: space-between;
     justify-content: center;
-    border: 1px solid red;
+    /* border: 1px solid red; */
+}
+.reportsHeaderInputDiv {
+    width: 33%;
+    height: 100%;
+    border-top: 1px solid #00000018;
+    border-bottom: 1px solid #00000018;
+    border-right: 1px solid #00000018;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* flex-wrap: wrap; */
+}
+.reportsHeaderInputDiv label {
+    font-size: larger;
+}
+.reportsHeaderInputDiv input {
+    margin: 10px;
+}
+.dataInp {
+    width: 300px; /* Adjust width as needed */
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc; /* Light border for a clean look */
+    border-radius: 8px; /* Rounded edges */
+    background-color: #f9f9f9; /* Soft background */
+    color: #333; /* Darker text color for readability */
+    outline: none; /* Remove default outline */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    transition: all 0.3s ease; /* Smooth hover and focus transitions */
+}
+
+.dataInp:hover {
+    background-color: #fff; /* Brighten on hover */
+    border-color: #888; /* Highlight border */
+}
+
+.dataInp:focus {
+    border-color: #000000; /* Highlight with a primary color */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Glow effect */
+    background-color: #fff; /* Ensure background stays bright */
+}
+#fromDiv,#toDiv{
+    width: 40%;
+}
+#getReportBtnDiv{
+    width: 20%;
+    border-right: none;
+}
+#getReportBtnDiv button {
+    padding: 13px 25px;
+    border: none;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
+    border-radius: 5px;
+    cursor: pointer;
+    transition:  transform 0.2s;
+}
+
+#getReportBtnDiv button:hover {
+    transform: scale(1.035); /* Slight zoom effect */
+    color: #ffffff; /* Brighter white for text */
 }
