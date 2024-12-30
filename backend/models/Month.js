@@ -6,6 +6,8 @@ const periodSchema = new mongoose.Schema({
     section: { type: String, required: true },
     isSubstitution: { type: Boolean, required: true },
     isLeisure: { type: Boolean, required: true },
+    branch: { type: String, required: false },
+    year: { type: Number, required: false }
 });
 
 const daySchema = new mongoose.Schema({
@@ -22,7 +24,7 @@ const monthSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     }
-    }, { timestamps: true }
+}, { timestamps: true }
 );
 
 const Month = mongoose.model('Month', monthSchema);
@@ -40,6 +42,8 @@ function validateMonth(month) {
                         section: Joi.string().required(),
                         isSubstitution: Joi.boolean().required(),
                         isLeisure: Joi.boolean().required(),
+                        branch: Joi.string(),
+                        year: Joi.number().integer()
                     })
                 ).required()
             })
@@ -61,6 +65,8 @@ function validateDay(day) {
                 section: Joi.string().required(),
                 isSubstitution: Joi.boolean().required(),
                 isLeisure: Joi.boolean().required(),
+                branch: Joi.string(),
+                year: Joi.number().integer()
             })
         ).required()
     });

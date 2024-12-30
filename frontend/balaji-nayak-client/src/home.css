@@ -1,0 +1,371 @@
+:root {
+    --secondaryTxtBlack: #181406bf;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: "Montserrat", serif;
+    color: rgb(24, 20, 6);
+    background-color: rgb(255, 254, 248);
+}
+.leftNav {
+    width: 15vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #181406;
+    color: rgb(255, 254, 248);
+    font-size: 0.85rem;
+}
+.navHeaderDiv {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8%;
+    padding: 20px 10px;
+    text-align: center;
+    border-bottom: 1.5px solid #3b3b3b;
+    background-color: #b1b2b5a4;
+    /* border: 2px solid red; */
+}
+.navContentDiv {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    height: 84%;
+    gap: 20px;
+    padding-top: 30px;
+    border-bottom: 1.5px solid #3b3b3b;
+
+    /* border: 2px solid red; */
+}
+
+.navFooterDiv {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8%;
+
+    /* border: 2px solid red; */
+}
+
+.navButtons {
+    width: 70%;
+    height: 50px;
+    /* border: 2px solid red; */
+    text-align: left;
+    padding-left: 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: transparent;
+    color: rgba(255, 254, 248, 0.587);
+    font-size: large;
+    cursor: pointer;
+    font-weight: 500;
+}
+.navButtons:hover {
+    background-color: #3b3b3b8c;
+}
+.activeNavBtn {
+    background-color: #3b3b3b;
+    color: rgb(255, 254, 248);
+}
+.activeNavBtn:hover {
+    background-color: #3b3b3b;
+}
+main {
+    width: 85vw;
+    height: 100vh;
+}
+.HomeContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mainHeader {
+    width: 100%;
+    height: 8%;
+    border-bottom: 1.5px solid #a1a1a18d;
+    padding: 10px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.logoutBtn {
+    width: 100px;
+    height: 30px;
+    background-color: #ff330048;
+    border: 1.5px solid #ff0000;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #3c0000;
+}
+.contentHeader {
+    padding: 0 20px;
+    width: 100%;
+    height: 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 500;
+}
+.secondaryTxt {
+    color: var(--secondaryTxtBlack);
+}
+.mainContent {
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 82%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.enterAttendanceContainer {
+    width: 55%;
+    height: 90%;
+    background-color: #46433a24;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.enterAttendanceHeader {
+    width: 100%;
+    height: 14%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* font-size: 1.5rem; */
+    font-weight: 500;
+    color: #3b3b3b;
+    /* border: 1px solid #3b3b3b;    */
+    border-radius: 20px 20px 0 0;
+    border-bottom: 1px solid #0000003f;
+    position: relative;
+}
+.enterAttendanceHeader h2 {
+    width: 85%;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+.prevPeriod {
+    padding: 10px 15px;
+    border: none;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+.nextPeriod,.okayBtn,.noBtn {
+    padding: 10px 15px;
+    border: none;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
+
+    border-radius: 5px;
+    cursor: pointer;
+}
+.enterAttendanceContentContainer {
+    width: 100%;
+    height: 86%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.enterAttendanceContent {
+    width: 50%;
+    height: 75%;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    height: auto;
+    border-radius: 8px;
+    width: 90%;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #5a3126;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.section-group span,
+.branch-group span,
+.year-group span {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #5a3126;
+}
+
+.sections,
+.branches,
+.years {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.sections label,
+.branches label,
+.years label,
+label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: #5a3126;
+}
+
+.checkbox-group {
+    margin-bottom: 15px;
+}
+
+.checkbox-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #5a3126;
+}
+
+.checkboxes {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.nextPeriod:hover,
+.prevPeriod:hover {
+    background-color: #359b52;
+}
+.formDisabled {
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+.dayReportTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    font-family: "Arial", sans-serif;
+    text-align: left;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    
+}
+
+.dayReportTable thead {
+    background-color: #f4f4f4; /* Soft gray for light theme */
+    color: #333; /* Dark text for contrast */
+}
+
+.dayReportTable th,
+.dayReportTable td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.dayReportTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for alternating rows */
+}
+
+.dayReportTable tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* Pure white for alternating rows */
+}
+
+.dayReportTable tbody tr:hover {
+    background-color: #f1f5f8; /* Subtle blue-gray hover effect */
+    cursor: pointer;
+}
+
+.dayReportTable th {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+    text-align: center;
+
+}
+
+.dayReportTable tbody td {
+    color: #555; /* Slightly lighter text for balance */
+    text-align: center;
+
+}
+
+.dayReportTable caption {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #444;
+    font-weight: bold;
+}
+.leisureRow{
+    background-color: rgba(255, 0, 0, 0.237);
+    text-align: center;
+}
+.substitutionRow{
+    background-color: rgba(255, 238, 0, 0.237);
+    text-align: center;
+}
+.dayReport{
+    display: flex;align-items: flex-start;justify-content: center;
+    flex-direction: column;
+    text-align: left;
+}
+.dayReport h3{
+    opacity: 0.6;
+}
+.okayBtn,.noBtn{
+    padding: 10px 40px;
+}
+.noBtn{
+    background-color: #ff4e0e;
+}
+.okayBtnDiv{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}

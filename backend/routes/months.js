@@ -5,17 +5,49 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const authenticateToken = require('../middleware/authenticateToken');
 
+//getAllMonths
 router.get('/', authenticateToken, async (req, res) => {
     const { userId } = req.user;
     const months = await Month.find({ user: userId })
     res.json({ userId, months })
 });
 
+//get month
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({
+                short: "invalidId",
+                message: "Invalid month ID."
+            });
+        }
+
+        console.log('Received GET request with params:', req.params);
+
+        const month = await Month.findById(id);
+        if (!month) {
+            return res.status(404).send({
+                short: "monthNotFound",
+                message: "The month with the given ID was not found."
+            });
+        }
+        if (!req.user || !req.user.userId || !month.user || req.user.userId.toString() !== month.user.toString()) {
+            return res.status(403).send({
+                short: "unauthorized",
+                message: "You are not authorized to view this month."
+            });
+        }
+        res.send(month);
+    } catch (ex) {
+        console.log('Error:', ex.message);
+        res.status(500).send('Something failed.');
+    }
+});
+
 //create new month
 router.post('/', authenticateToken, async (req, res) => {
     try {
-
-
         console.log('Received POST request with body:', req.body);
 
         const existingMonth = await Month.findOne({ month: req.body.month, year: req.body.year, user: req.user.userId });
@@ -28,7 +60,6 @@ router.post('/', authenticateToken, async (req, res) => {
             });
         }
 
-
         const { error } = validateMonth(req.body);
         if (error) {
             console.log('Validation error:', error.details[0].message);
@@ -37,7 +68,6 @@ router.post('/', authenticateToken, async (req, res) => {
                 message: error.details[0].message
             });
         }
-
 
         const month = new Month({
             month: req.body.month,
@@ -102,26 +132,8 @@ router.get('/day', authenticateToken, async (req, res) => {
 });
 
 //create new day
+//problem: checking whether the day already exists is not working
 router.post('/day', authenticateToken, async (req, res) => {
-    // Sample body
-    // {
-    //     "date": "2023-10-01",
-    //     "periods": [
-    //         {
-    //             "class": 10,
-    //             "section": "A",
-    //             "isSubstitution": false,
-    //             "isLeisure": false
-    //         },
-    //         {
-    //             "class": 11,
-    //             "section": "B",
-    //             "isSubstitution": true,
-    //             "isLeisure": false
-    //         }
-    //     ]
-    // }
-
     try {
         console.log('Received POST request with body:', req.body);
 
@@ -154,14 +166,11 @@ router.post('/day', authenticateToken, async (req, res) => {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
 
+        console.log(`Searching for month document with month: ${month}, year: ${year}, user: ${req.user.userId}`);
         let monthDoc = await Month.findOne({ month, year, user: req.user.userId });
 
-        // if(!monthDoc.user){
-        //     res.send({message:'fetched a month document of other user '})
-        // }
-
-        // If month document doesn't exist, create one
         if (!monthDoc) {
+            console.log('No existing month document found, creating a new one.');
             monthDoc = new Month({
                 month: month,
                 year: year,
@@ -169,7 +178,6 @@ router.post('/day', authenticateToken, async (req, res) => {
                 days: [req.body]
             });
             console.log('Creating new month:', monthDoc);
-            console.log(req.user);
             if (req.user) {
                 monthDoc.user = req.user.userId;
             } else {
@@ -183,10 +191,10 @@ router.post('/day', authenticateToken, async (req, res) => {
             return res.send(monthDoc);
         }
 
-        console.log('monthDoc', monthDoc);
+        console.log('Found existing month document:', monthDoc);
 
         // If month document exists, check whether the day already exists, if yes replace the periods array with the new one.
-        const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString() === date.toISOString());
+        const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString().split('T')[0] === date.toISOString().split('T')[0]);
         if (dayIndex !== -1) {
             monthDoc.days[dayIndex] = req.body;
             console.log('After replacing the periods:', monthDoc);
@@ -215,10 +223,7 @@ router.post('/day', authenticateToken, async (req, res) => {
         console.log('Error:', ex.message);
         res.status(500).send('Something failed.');
     }
-});
-
-
-
+}); 
 
 function createMonthDocument() {
     const currentDate = new Date();
@@ -229,4 +234,5 @@ function createMonthDocument() {
     });
     return newMonthDoc;
 }
+
 module.exports = router;
