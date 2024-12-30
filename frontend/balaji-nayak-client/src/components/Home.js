@@ -5,6 +5,8 @@ function Home() {
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
   }
+  const [currPage, setCurrPage] = useState('enterAttendance');
+
   const [currPeriod, setCurrPeriod] = useState(1);
   const [isLeisure, setIsLeisure] = useState(false);
   const [isSubstitution, setIsSubstitution] = useState(false);
@@ -36,6 +38,11 @@ function Home() {
     month: '2-digit',
     year: 'numeric'
   });
+
+  const handlePageChange = (page) => {
+    setCurrPage(page);
+  }
+
   const handleLeisureChange = (e) => {
     updatePeriodData({ isLeisure: e.target.checked });
     setIsLeisure(e.target.checked);
@@ -158,8 +165,8 @@ function Home() {
           <h1>ATTENDANCE TRACKER</h1>
         </div>
         <div className='navContentDiv'>
-          <button className='navButtons activeNavBtn'>Enter Attendance</button>
-          <button className='navButtons'>Reports</button>
+          <button onClick={() => handlePageChange('enterAttendance')} className={currPage === 'enterAttendance' ? 'navButtons activeNavBtn' : 'navButtons'}>Enter Attendance</button>
+          <button onClick={() => handlePageChange('reports')} className={currPage === 'reports' ? 'navButtons activeNavBtn' : 'navButtons'}>Reports</button>
         </div>
         <div className='navFooterDiv'>
           <p>dhanushsai1467@gmail.com</p>
@@ -174,149 +181,161 @@ function Home() {
           }} className='logoutBtn'>Log Out</button>
         </div>
         <div className='contentHeader'>
-          <h1>Enter Attendance</h1>
-          <p className='secondaryTxt'>Date: {formattedDate}</p>
+          <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
+          {currPage === 'enterAttendance' && <p className='secondaryTxt'>Date: {formattedDate}</p>}
+
         </div>
         <div className='mainContent'>
-          {!enteredToday && (
-            <div className='enterAttendanceContainer'>
-              <div className='enterAttendanceHeader'>
-                {!submitted && (
-                  <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
-                )}
-                {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Attendance Submitted</h2>}
-              </div>
-              <div className='enterAttendanceContentContainer'>
-                {!submitted && (
-                  <div className='enterAttendanceContent'>
-                    <div className='container'>
-                      <div className="checkbox-group">
-                        <label style={{ color: 'rgba(255, 78, 33, 0.99)' }}>
-
-                          <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
-                          Leisure ?
-                        </label>
-                        <label style={{ color: 'rgb(0, 187, 255)' }} className={isLeisure ? "formDisabled" : ""}>
-                          <input onChange={handleSubstitutionChange} disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
-                          Substitution ?
-                        </label>
-                      </div>
-
-                      <label className={isLeisure ? "formDisabled" : ""} htmlFor="class">CLASS</label>
-                      <input onChange={handleClassEntry} disabled={isLeisure} type="number" id="class" min="1" max="12" placeholder="1 - 12" />
-
-                      <div className="branch-group">
-                        <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >BRANCH</span>
-                        <div className="branches">
-                          <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                            <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
-                            MPC
-                          </label>
-                          <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                            <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="BIPC" />
-                            BIPC
-                          </label>
-                          <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                            <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
-                            MBIPC
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="year-group">
-                        <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >YEAR</span>
-                        <div className="years">
-                          <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                            <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
-                            1
-                          </label>
-                          <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                            <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="2" />
-                            2
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="section-group">
-                        <span className={isLeisure ? "formDisabled" : ""} >SECTION</span>
-                        <div className="sections">
-                          <label className={isLeisure ? "formDisabled" : ""} >
-                            <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="A" defaultChecked />
-                            A
-                          </label>
-                          <label className={isLeisure ? "formDisabled" : ""} >
-                            <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="B" />
-                            B
-                          </label>
-                          <label className={isLeisure ? "formDisabled" : ""} >
-                            <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="C" />
-                            C
-                          </label>
-                          <label className={isLeisure ? "formDisabled" : ""} >
-                            <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="D" />
-                            D
-                          </label >
-                          <label className={isLeisure ? "formDisabled" : ""} >
-                            <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="E" />
-                            E
-                          </label>
-                        </div>
-                      </div>
-
-                      <button onClick={handleNextPeriod} className='nextPeriod' type="button">Next Period &gt;&gt;</button>
-                    </div>
-
-                  </div>
-                )}
-                {dayReport.length > 0 && (
-                  <div className='dayReport'>
-                    <h3>Day Report</h3>
-                    <table className='dayReportTable'>
-                      <thead>
-                        <tr>
-                          <th>Peroiod</th>
-                          <th>class</th>
-                          <th>branch</th>
-                          <th>year</th>
-                          <th>Substitution</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-
-                        {dayReport.map((period, index) => (
-                          <tr key={index}>
-                            <td><b>{index + 1}</b></td>
-                            {period.isLeisure && <td className='leisureRow' colSpan={4}><b>Leisure</b></td>}
-                            {!period.isLeisure && (
-                              <>
-                                <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class + " " + period.section}</td>
-                                <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.branch : '-'}</td>
-                                <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.year : '-'}</td>
-                                <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.isSubstitution ? 'Yes' : 'No'}</td>
-                              </>
-                            )}
-
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className='okayBtnDiv'>
-                      <button onClick={handleNo} className='noBtn'>No</button>
-                      <button onClick={handleYes} className='okayBtn'>Okay</button>
-                    </div>
-                  </div>
-
-                )}
-              </div>
-            </div>
+          {currPage === 'reports' && (
+            <>
+              <h1>Reports</h1>
+            </>
           )}
+          {currPage === 'enterAttendance' && !enteredToday && (
+            <>
+              {!enteredToday && (
+                <div className='enterAttendanceContainer'>
+                  <div className='enterAttendanceHeader'>
+                    {!submitted && (
+                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
+                    )}
+                    {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Attendance Submitted</h2>}
+                  </div>
+                  <div className='enterAttendanceContentContainer'>
+                    {!submitted && (
+                      <div className='enterAttendanceContent'>
+                        <div className='container'>
+                          <div className="checkbox-group">
+                            <label style={{ color: 'rgba(255, 78, 33, 0.99)' }}>
 
-          {enteredToday && (
+                              <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
+                              Leisure ?
+                            </label>
+                            <label style={{ color: 'rgb(0, 187, 255)' }} className={isLeisure ? "formDisabled" : ""}>
+                              <input onChange={handleSubstitutionChange} disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
+                              Substitution ?
+                            </label>
+                          </div>
+
+                          <label className={isLeisure ? "formDisabled" : ""} htmlFor="class">CLASS</label>
+                          <input onChange={handleClassEntry} disabled={isLeisure} type="number" id="class" min="1" max="12" placeholder="1 - 12" />
+
+                          <div className="branch-group">
+                            <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >BRANCH</span>
+                            <div className="branches">
+                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                                <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
+                                MPC
+                              </label>
+                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                                <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="BIPC" />
+                                BIPC
+                              </label>
+                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                                <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
+                                MBIPC
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="year-group">
+                            <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >YEAR</span>
+                            <div className="years">
+                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                                <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
+                                1
+                              </label>
+                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                                <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="2" />
+                                2
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="section-group">
+                            <span className={isLeisure ? "formDisabled" : ""} >SECTION</span>
+                            <div className="sections">
+                              <label className={isLeisure ? "formDisabled" : ""} >
+                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="A" defaultChecked />
+                                A
+                              </label>
+                              <label className={isLeisure ? "formDisabled" : ""} >
+                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="B" />
+                                B
+                              </label>
+                              <label className={isLeisure ? "formDisabled" : ""} >
+                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="C" />
+                                C
+                              </label>
+                              <label className={isLeisure ? "formDisabled" : ""} >
+                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="D" />
+                                D
+                              </label >
+                              <label className={isLeisure ? "formDisabled" : ""} >
+                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="E" />
+                                E
+                              </label>
+                            </div>
+                          </div>
+
+                          <button onClick={handleNextPeriod} className='nextPeriod' type="button">Next Period &gt;&gt;</button>
+                        </div>
+
+                      </div>
+                    )}
+                    {dayReport.length > 0 && (
+                      <div className='dayReport'>
+                        <h3>Day Report</h3>
+                        <table className='dayReportTable'>
+                          <thead>
+                            <tr>
+                              <th>Peroiod</th>
+                              <th>class</th>
+                              <th>branch</th>
+                              <th>year</th>
+                              <th>Substitution</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            {dayReport.map((period, index) => (
+                              <tr key={index}>
+                                <td><b>{index + 1}</b></td>
+                                {period.isLeisure && <td className='leisureRow' colSpan={4}><b>Leisure</b></td>}
+                                {!period.isLeisure && (
+                                  <>
+                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class + " " + period.section}</td>
+                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.branch : '-'}</td>
+                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.year : '-'}</td>
+                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.isSubstitution ? 'Yes' : 'No'}</td>
+                                  </>
+                                )}
+
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <div className='okayBtnDiv'>
+                          <button onClick={handleNo} className='noBtn'>No</button>
+                          <button onClick={handleYes} className='okayBtn'>Okay</button>
+                        </div>
+                      </div>
+
+                    )}
+                  </div>
+                </div>
+              )}
+
+            </>
+          )}
+          {enteredToday && currPage === 'enterAttendance' && (
             <>
               <p>Completed todays Attendance entry</p>
               <a href="/">Enter Again</a>
             </>
           )}
+
+
         </div>
       </main>
     </div>
