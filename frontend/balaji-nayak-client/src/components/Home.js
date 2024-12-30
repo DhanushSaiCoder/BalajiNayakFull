@@ -252,20 +252,79 @@ function Home() {
   useEffect(() => {
     if (Object.keys(toDateObj).length === 0) return;
     console.log('toDateObj: ', toDateObj);
+    removeInvalidMonthsToDate(toDateObj)
   }, [toDateObj]);
 
+  // Utility function to validate date object
+  const validateDateObj = (dateObj) => {
+    return (
+      dateObj &&
+      typeof dateObj.year === "number" &&
+      typeof dateObj.month === "number"
+    );
+  };
+
+  // Add valid months from userMonths to reqMonths
   const addValidMonthsFromDate = (dateObj) => {
+    if (!validateDateObj(dateObj)) {
+      console.error("Invalid dateObj passed to addValidMonthsFromDate");
+      return;
+    }
+
     setReqMonths((prev) => {
+      // Filter valid months from userMonths
       const newMonths = userMonths.filter((month) => {
+        return (
+          month &&
+          typeof month.year === "number" &&
+          typeof month.month === "number" &&
+          (month.year > dateObj.year ||
+            (month.year === dateObj.year && month.month >= dateObj.month))
+        );
+      });
+
+      const combined = [...prev, ...newMonths];
+
+      // Remove months less than from month (dateObj.month) in the combined list
+      const filteredMonths = combined.filter((month) => {
         return (
           month.year > dateObj.year ||
           (month.year === dateObj.year && month.month >= dateObj.month)
         );
       });
 
-      return [...prev, ...newMonths];
+      // Remove duplicates
+      return filteredMonths.filter(
+        (month, index, self) =>
+          index === self.findIndex((m) => m.year === month.year && m.month === month.month)
+      );
     });
   };
+
+
+  // Remove invalid months from reqMonths
+  const removeInvalidMonthsToDate = (dateObj) => {
+    if (!validateDateObj(dateObj)) {
+      console.error("Invalid dateObj passed to removeInvalidMonthsToDate");
+      return;
+    }
+
+    setReqMonths((prev) => {
+      const filtered = prev.filter((month) => {
+        return (
+          month &&
+          typeof month.year === "number" &&
+          typeof month.month === "number" &&
+          (month.year < dateObj.year ||
+            (month.year === dateObj.year && month.month <= dateObj.month))
+        );
+      });
+
+      // Return the same array if no changes, to avoid unnecessary state updates
+      return filtered.length === prev.length ? prev : filtered;
+    });
+  };
+
 
 
   useEffect(() => {
