@@ -31,8 +31,13 @@ function Home() {
 
 
   //report states:
+  const [userMonths, setUserMonths] = useState([])
   const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
   const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
+
+  const [fromDateObj, setFromDateObj] = useState({})
+  const [toDateObj, setToDateObj] = useState({})
+
 
 
   const [periodData, setPeriodData] = useState({
@@ -43,7 +48,7 @@ function Home() {
     branch,
     year
   });
-  
+
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
@@ -163,8 +168,7 @@ function Home() {
 
   const storeUserMonths = (data) => {
     const months = data.months;
-    console.log('user months: ', months)
-
+    setUserMonths(months)
   }
 
   const saveData = (data) => {
@@ -208,11 +212,30 @@ function Home() {
     setToDate(e.target.value)
 
   }
-  
+
   const handleGetReport = () => {
-    console.log('fromDate:',fromDate)
-    console.log('toDate:',toDate)
+    const [fromyear, frommonth, formdate] = fromDate.split('-').map(Number);
+    setFromDateObj((prev) => {
+      return {
+        ...prev,
+        year: fromyear,
+        month: frommonth,
+        date: formdate
+      }
+    })
+
+    const [toyear, tomonth, todate] = toDate.split('-').map(Number);
+    setToDateObj((prev) => {
+      return {
+        ...prev,
+        year: toyear,
+        month: tomonth,
+        date: todate
+      }
+    })
   }
+  
+  
 
   return (
     <div className='HomeContainer'>
@@ -255,7 +278,7 @@ function Home() {
                   <div id="toDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
                       TO:
-                      <input  defaultValue={fromDate} onChange={handleToDateChange}  className='dataInp' type="date" id="from" />
+                      <input defaultValue={fromDate} onChange={handleToDateChange} className='dataInp' type="date" id="from" />
                     </label>
                   </div>
                   <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
