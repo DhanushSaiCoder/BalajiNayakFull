@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import '../home.css';
 
 function Home() {
@@ -127,6 +127,35 @@ function Home() {
     }
   }, [readyToSubmit, data]);
 
+
+  useEffect(() => {
+    if (currPage === 'reports') {
+      console.log('Fetching user months...')
+      fetch('http://localhost:5000/months', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          storeUserMonths(data);
+        }
+        )
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Fetching user months failed!');
+        });
+    }
+  }, [currPage]);
+
+  const storeUserMonths = (data) => {
+    const months = data.months;
+    console.log('user months: ', months)
+
+  }
+
   const saveData = (data) => {
     const monthId = data._id;
 
@@ -192,17 +221,17 @@ function Home() {
                 <div className='reportsHeader'>
                   <div id="fromDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
-                      FROM: 
+                      FROM:
                       <input className='dataInp' type="date" id="from" />
                     </label>
                   </div>
-                  <div id="toDiv"  className='reportsHeaderInputDiv'>
-                  <label htmlFor="from">
-                      TO: 
+                  <div id="toDiv" className='reportsHeaderInputDiv'>
+                    <label htmlFor="from">
+                      TO:
                       <input className='dataInp' type="date" id="from" />
                     </label>
                   </div>
-                  <div id="getReportBtnDiv"  className='reportsHeaderInputDiv'>
+                  <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
                     <button>Get Report</button>
                   </div>
                 </div>
