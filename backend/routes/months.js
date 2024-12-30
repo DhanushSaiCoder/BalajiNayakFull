@@ -132,6 +132,7 @@ router.get('/day', authenticateToken, async (req, res) => {
 });
 
 //create new day
+//problem: checking whether the day already exists is not working
 router.post('/day', authenticateToken, async (req, res) => {
     try {
         console.log('Received POST request with body:', req.body);
@@ -193,7 +194,7 @@ router.post('/day', authenticateToken, async (req, res) => {
         console.log('Found existing month document:', monthDoc);
 
         // If month document exists, check whether the day already exists, if yes replace the periods array with the new one.
-        const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString() === date.toISOString());
+        const dayIndex = monthDoc.days.findIndex(day => new Date(day.date).toISOString().split('T')[0] === date.toISOString().split('T')[0]);
         if (dayIndex !== -1) {
             monthDoc.days[dayIndex] = req.body;
             console.log('After replacing the periods:', monthDoc);
