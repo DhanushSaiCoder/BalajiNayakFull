@@ -188,7 +188,9 @@ function Home() {
         <div className='mainContent'>
           {currPage === 'reports' && (
             <>
-              <h1>Reports</h1>
+              <div className='reportsContainer'>
+                <div className='reportsHeader'></div>
+              </div>
             </>
           )}
           {currPage === 'enterAttendance' && !enteredToday && (

@@ -369,3 +369,22 @@ label {
     justify-content: space-between;
     padding: 10px 20px;
 }
+.reportsContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 10px 20px;
+    /* border: 1.5px solid red; */
+    height: 100%;
+}
+.reportsHeader{
+    height: 13%;
+    width: 100%;    
+    display: flex;
+    align-items: center;
+    flex-direction: space-between;
+    justify-content: center;
+    border: 1px solid red;
+}
