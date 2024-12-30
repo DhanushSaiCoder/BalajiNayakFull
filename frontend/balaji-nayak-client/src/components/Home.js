@@ -5,6 +5,11 @@ function Home() {
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
   }
+  const currDate = new Date();
+  const currDay = currDate.getDate()
+  const currMonth = currDate.getMonth() + 1; // Months are 0-based, so add 1
+  const currYear = currDate.getFullYear();
+
   const [currPage, setCurrPage] = useState('enterAttendance');
 
   const [currPeriod, setCurrPeriod] = useState(1);
@@ -24,6 +29,12 @@ function Home() {
   });
 
 
+
+  //report states:
+  const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
+  const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
+
+
   const [periodData, setPeriodData] = useState({
     class: classValue,
     section: section,
@@ -32,7 +43,7 @@ function Home() {
     branch,
     year
   });
-  const currDate = new Date();
+  
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
@@ -187,6 +198,22 @@ function Home() {
     setDayReport(report);
   }
 
+  const handleFromDateChange = (e) => {
+    // console.log('from Date: ', e.target.value)
+    setfromDate(e.target.value)
+  }
+
+  const handleToDateChange = (e) => {
+    // console.log('to Date: ', e.target.value)
+    setToDate(e.target.value)
+
+  }
+  
+  const handleGetReport = () => {
+    console.log('fromDate:',fromDate)
+    console.log('toDate:',toDate)
+  }
+
   return (
     <div className='HomeContainer'>
       <div className='leftNav'>
@@ -222,17 +249,17 @@ function Home() {
                   <div id="fromDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
                       FROM:
-                      <input className='dataInp' type="date" id="from" />
+                      <input onChange={handleFromDateChange} className='dataInp' type="date" id="from" />
                     </label>
                   </div>
                   <div id="toDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
                       TO:
-                      <input className='dataInp' type="date" id="from" />
+                      <input onChange={handleToDateChange}  className='dataInp' type="date" id="from" />
                     </label>
                   </div>
                   <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
-                    <button>Get Report</button>
+                    <button onClick={handleGetReport}>Get Report</button>
                   </div>
                 </div>
                 <div className='reportsContent'>
