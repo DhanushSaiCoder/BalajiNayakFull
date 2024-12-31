@@ -324,143 +324,153 @@ function Home() {
     });
   };
 
+useEffect(() => {
+  if (reqMonths.length == 0) return;
 
+  let TempReqDays = []
+  reqMonths.forEach((month) => TempReqDays.push(month.days));
 
-  useEffect(() => {
-    if (reqMonths.length == 0) return;
-    let TempReqDays = []
-    reqMonths.forEach((month) => TempReqDays.push(month.days));
+  const TempReqDays2 = []
 
-    const TempReqDays2 = []
+  // Flatten the TempReqDays array
+  for (let i = 0; i < TempReqDays.length; i++) {
+    for (let j = 0; j < TempReqDays[i].length; j++)
+      TempReqDays2.push(TempReqDays[i][j])
+  }
+  TempReqDays = TempReqDays2
 
-    for (let i = 0; i < TempReqDays.length; i++) {
-      for (let j = 0; j < TempReqDays[i].length; j++)
-        TempReqDays2.push(TempReqDays[i][j])
+  console.log('TempReqDays after flattening:', TempReqDays);
+
+  // Filter days based on date range
+  let ReqDays = []
+
+  for (let i = 0; i < TempReqDays.length; i++) {
+    const dateString = TempReqDays[i].date;
+    const date = new Date(dateString);
+    const result = {
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth() + 1,  // Adjust for 0-indexed months
+      date: date.getUTCDate()
+    };
+
+    console.log('Checking date:', result);
+
+    // Log the `fromDateObj` and `toDateObj` values for comparison
+    console.log('fromDateObj:', fromDateObj);
+    console.log('toDateObj:', toDateObj);
+
+    // Check if the date is within the range
+    if (
+      (result.year > fromDateObj.year || 
+        (result.year === fromDateObj.year && result.month > fromDateObj.month) || 
+        (result.year === fromDateObj.year && result.month === fromDateObj.month && result.date >= fromDateObj.date)) &&
+      (result.year < toDateObj.year || 
+        (result.year === toDateObj.year && result.month < toDateObj.month) || 
+        (result.year === toDateObj.year && result.month === toDateObj.month && result.date <= toDateObj.date))
+    ) {
+      ReqDays.push(TempReqDays[i]);
     }
-    TempReqDays = TempReqDays2
+  }
 
-    //Remove unwanted days
+  console.log('Filtered ReqDays within date range:', ReqDays);
 
-    let ReqDays = []
+  // Get periods from filtered ReqDays
+  let ReqPeriods = []
+  for (let i in ReqDays) {
+    ReqPeriods.push(ReqDays[i].periods)
+  }
 
-    for (let i = 0; i < TempReqDays.length; i++) {
-      const dateString = TempReqDays[i].date;
-      const date = new Date(dateString);
-      const result = {
-        year: date.getUTCFullYear(),
-        month: date.getUTCMonth() + 1, // Months are zero-indexed in JS
-        date: date.getUTCDate()
-      };
+  console.log('ReqPeriods from ReqDays:', ReqPeriods);
 
-
-      //result.year >= fromDateObj.year && month && date - push it to ReqDays;
-      if ((result.year >= fromDateObj.year && result.month >= fromDateObj.month && result.date >= fromDateObj.date) &&
-        (result.year <= toDateObj.year && result.month <= toDateObj.month && result.date <= toDateObj.date)) {
-        ReqDays.push(TempReqDays[i])
+  // Filter out leisure periods
+  let nonLeisurePeriods = []
+  for (let i in ReqPeriods) {
+    for (let p in ReqPeriods[i]) {
+      if (!ReqPeriods[i][p].isLeisure) {
+        nonLeisurePeriods.push(ReqPeriods[i][p])
       }
     }
+  }
 
-    // get all the periods from each index of ReqDays
-    let ReqPeriods = []
-    for (let i in ReqDays) {
-      ReqPeriods.push(ReqDays[i].periods)
-    }
+  console.log('nonLeisurePeriods:', nonLeisurePeriods);
 
-    let nonLeisurePeriods = []
-    for (let i in ReqPeriods) {
-      for (let p in ReqPeriods[i]) {
-        if (!ReqPeriods[i][p].isLeisure) {
-          nonLeisurePeriods.push(ReqPeriods[i][p])
-        }
+  setReqPeriods((prev) => {
+    return [...nonLeisurePeriods]
+  })
+}, [reqMonths]);
+
+useEffect(() => {
+  if (reqPeriods.length == 0) return console.log('No classes attended.');
+  
+  console.log('reqPeriods:', reqPeriods);
+
+  // Convert the reqPeriods data to the required format
+  let convertedReqPeriods = []
+  
+  for (let i in reqPeriods) {
+    let period = reqPeriods[i]
+    if (!period.isLeisure) {
+      let data = {
+        class: period.class < 11 ?
+          `${period.class}-${period.section}` :
+          `${period.class}-${period.branch}-${period.year}yr-${period.section}`,
+        isSubstitution: period.isSubstitution
       }
+      convertedReqPeriods.push(data)
     }
+  }
 
-    setReqPeriods((prev) => {
-      return [...nonLeisurePeriods]
-    })
-  }, [reqMonths]);
+  console.log('converted reqPeriods:', convertedReqPeriods);
 
-  useEffect(() => {
-    if (reqPeriods.length == 0) return console.log('No classes attended.');
-    console.log('reqPeriods: ', reqPeriods);
-    //convert the reqPeriods data to this format: (neglect duplicates) 
-    // class: 1-A / 11-MPC-2yr-A
-    // regular: 5
-    // substitution: 1
-    // total: 6
+  // Function to count periods
+  let periods = convertedReqPeriods
 
-    let convertedReqPeriods = []
-    // iterate through the reqPeriods,if not leisure,create an object containing the data above, push to convertedReqPeriods
+  function countPeriods(periods) {
+    let result = [];
 
-    for (let i in reqPeriods) {
-      let period = reqPeriods[i]
-      if (!period.isLeisure) {
-        let data = {
-          class: period.class < 11 ?
-            `${period.class}-${period.section}` :
-            `${period.class}-${period.branch}-${period.year}yr-${period.section}`,
-          isSubstitution: period.isSubstitution
-        }
-        convertedReqPeriods.push(data)
-      }
-    }
+    periods.forEach(period => {
+      let existingClass = result.find(item => item.class === period.class);
 
-    console.log('converted reqPeriods: ', convertedReqPeriods)
-
-    //iterate through each period in convertedReqPe
-    // and count its instances when substitution & !substitution, 
-    // if a period not exists in finalData, 
-    // push it
-
-
-    let periods = convertedReqPeriods
-
-    function countPeriods(periods) {
-      let result = [];
-
-      periods.forEach(period => {
-        let existingClass = result.find(item => item.class === period.class);
-
-        if (existingClass) {
-          if (period.isSubstitution) {
-            existingClass.substitution++;
-          } else {
-            existingClass.regular++;
-          }
+      if (existingClass) {
+        if (period.isSubstitution) {
+          existingClass.substitution++;
         } else {
-          result.push({
-            class: period.class,
-            substitution: period.isSubstitution ? 1 : 0,
-            regular: period.isSubstitution ? 0 : 1
-          });
+          existingClass.regular++;
         }
-      });
-
-      return result;
-    }
-
-    const addTotal = (periods) => {
-      //for each instance of the periods, 
-      // add total: sub+reg
-      let output = []
-      periods.forEach((period) => {
-        let periodData = {
+      } else {
+        result.push({
           class: period.class,
-          substitution: period.substitution,
-          regular: period.regular,
-          total: period.substitution + period.regular
-        }
-        output.push(periodData)
-      })
+          substitution: period.isSubstitution ? 1 : 0,
+          regular: period.isSubstitution ? 0 : 1
+        });
+      }
+    });
 
-      setReportData(output)
-    }
+    console.log('countPeriods result:', result);
+    return result;
+  }
 
-    let finalData = countPeriods(periods);
-    finalData = addTotal(finalData)
+  const addTotal = (periods) => {
+    // Add total count (substitution + regular)
+    let output = []
+    periods.forEach((period) => {
+      let periodData = {
+        class: period.class,
+        substitution: period.substitution,
+        regular: period.regular,
+        total: period.substitution + period.regular
+      }
+      output.push(periodData)
+    })
 
-  }, [reqPeriods])
+    console.log('Output after adding total:', output);
+    setReportData(output)
+  }
 
+  let finalData = countPeriods(periods);
+  addTotal(finalData)
+
+}, [reqPeriods]);
 
   reportData.length != 0 && console.log('reportData: ', reportData);
 
