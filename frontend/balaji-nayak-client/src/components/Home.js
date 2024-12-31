@@ -206,17 +206,14 @@ function Home() {
 
   const generateDayReport = (periods) => {
     const report = periods
-    console.log('report: ', report)
     setDayReport(report);
   }
 
   const handleFromDateChange = (e) => {
-    // console.log('from Date: ', e.target.value)
     setfromDate(e.target.value)
   }
 
   const handleToDateChange = (e) => {
-    // console.log('to Date: ', e.target.value)
     setToDate(e.target.value)
 
   }
@@ -247,14 +244,12 @@ function Home() {
 
   useEffect(() => {
     if (Object.keys(fromDateObj).length === 0) return;
-    console.log('fromDateObj: ', fromDateObj);
     addValidMonthsFromDate(fromDateObj)
   }, [fromDateObj]);
 
 
   useEffect(() => {
     if (Object.keys(toDateObj).length === 0) return;
-    console.log('toDateObj: ', toDateObj);
     removeInvalidMonthsToDate(toDateObj)
   }, [toDateObj]);
 
@@ -356,7 +351,6 @@ function Home() {
         date: date.getUTCDate()
       };
 
-      // console.log("result",result); // { year: 2024, month: 12, date: 30 }
 
       //result.year >= fromDateObj.year && month && date - push it to ReqDays;
       if ((result.year >= fromDateObj.year && result.month >= fromDateObj.month && result.date >= fromDateObj.date) &&
