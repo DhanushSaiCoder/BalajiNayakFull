@@ -37,6 +37,7 @@ function Home() {
 
   const [reqPeriods, setReqPeriods] = useState([])
 
+  const [reportData, setReportData] = useState([])
 
   const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
   const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
@@ -383,7 +384,6 @@ function Home() {
     if (reqPeriods.length == 0) return console.log('No classes attended.');
     console.log('reqPeriods: ', reqPeriods);
     //convert the reqPeriods data to this format: (neglect duplicates) 
-
     // class: 1-A / 11-MPC-2yr-A
     // regular: 5
     // substitution: 1
@@ -405,9 +405,65 @@ function Home() {
       }
     }
 
-    console.log('converted reqPeriods: ',convertedReqPeriods)
-    
+    console.log('converted reqPeriods: ', convertedReqPeriods)
+
+    //iterate through each period in convertedReqPe
+    // and count its instances when substitution & !substitution, 
+    // if a period not exists in finalData, 
+    // push it
+
+
+    let periods = convertedReqPeriods
+
+    function countPeriods(periods) {
+      let result = [];
+
+      periods.forEach(period => {
+        let existingClass = result.find(item => item.class === period.class);
+
+        if (existingClass) {
+          if (period.isSubstitution) {
+            existingClass.substitution++;
+          } else {
+            existingClass.regular++;
+          }
+        } else {
+          result.push({
+            class: period.class,
+            substitution: period.isSubstitution ? 1 : 0,
+            regular: period.isSubstitution ? 0 : 1
+          });
+        }
+      });
+
+      return result;
+    }
+
+    const addTotal = (periods) => {
+      //for each instance of the periods, 
+      // add total: sub+reg
+      let output = []
+      periods.forEach((period) => {
+        let periodData = {
+          class: period.class,
+          substitution: period.substitution,
+          regular: period.regular,
+          total: period.substitution + period.regular
+        }
+        output.push(periodData)
+      })
+
+      setReportData(output)
+    }
+
+    let finalData = countPeriods(periods);
+    finalData = addTotal(finalData)
+
   }, [reqPeriods])
+
+
+  reportData.length != 0 && console.log('reportData: ', reportData);
+
 
 
   return (
@@ -459,20 +515,31 @@ function Home() {
                   </div>
                 </div>
                 <div className='reportsContent'>
-                  <h1>Reports content</h1>
                   {
-                    reqPeriods && reqPeriods.length > 0 && (
+                    reportData.length != 0 && (
                       <>
                         <table className='reportTable'>
                           <thead>
                             <tr>
                               <th>CLASS</th>
                               <th>REGULAR</th>
-                              <th>TOTAL</th>
                               <th>SUBSTITUTION</th>
+                              <th>TOTAL</th>
                             </tr>
 
                           </thead>
+                          <tbody>
+                            {reportData.map((period) => {
+                              return (
+                                <tr key={period.class}>
+                                  <td>{period.class}</td>
+                                  <td>{period.regular}</td>
+                                  <td>{period.substitution}</td>
+                                  <td>{period.total}</td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
                         </table>
                       </>
                     )
