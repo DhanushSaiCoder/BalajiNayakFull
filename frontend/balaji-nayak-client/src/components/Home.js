@@ -35,6 +35,9 @@ function Home() {
 
   const [reqMonths, setReqMonths] = useState([])
 
+  const [reqPeriods, setReqPeriods] = useState([])
+
+
   const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
   const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
 
@@ -330,7 +333,6 @@ function Home() {
   useEffect(() => {
     if (reqMonths.length == 0) return;
     let TempReqDays = []
-    console.log('Logging days for each month:');
     reqMonths.forEach((month) => TempReqDays.push(month.days));
 
     const TempReqDays2 = []
@@ -362,18 +364,18 @@ function Home() {
         ReqDays.push(TempReqDays[i])
       }
     }
-    console.log('ReqDays: ', ReqDays)
 
     // get all the periods from each index of ReqDays
     let ReqPeriods = []
-    for(let i in ReqDays){
+    for (let i in ReqDays) {
       ReqPeriods.push(ReqDays[i].periods)
     }
-    console.log(ReqPeriods)
-
-
+    setReqPeriods((prev) => {
+      return [...ReqPeriods]
+    })
   }, [reqMonths]);
 
+  console.log('reqPeriods: ',reqPeriods)
 
   return (
     <div className='HomeContainer'>
