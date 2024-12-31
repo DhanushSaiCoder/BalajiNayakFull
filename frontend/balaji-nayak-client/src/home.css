@@ -284,60 +284,6 @@ label {
     opacity: 0.35;
 }
 
-.dayReportTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    font-family: "Arial", sans-serif;
-    text-align: left;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.dayReportTable thead {
-    background-color: #f4f4f4; /* Soft gray for light theme */
-    color: #333; /* Dark text for contrast */
-}
-
-.dayReportTable th,
-.dayReportTable td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-}
-
-.dayReportTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for alternating rows */
-}
-
-.dayReportTable tbody tr:nth-child(odd) {
-    background-color: #ffffff; /* Pure white for alternating rows */
-}
-
-.dayReportTable tbody tr:hover {
-    background-color: #f1f5f8; /* Subtle blue-gray hover effect */
-    cursor: pointer;
-}
-
-.dayReportTable th {
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-weight: 600;
-    text-align: center;
-}
-
-.dayReportTable tbody td {
-    color: #555; /* Slightly lighter text for balance */
-    text-align: center;
-}
-
-.dayReportTable caption {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #444;
-    font-weight: bold;
-}
 .leisureRow {
     background-color: rgba(255, 0, 0, 0.237);
     text-align: center;
@@ -460,4 +406,59 @@ label {
 #getReportBtnDiv button:hover {
     transform: scale(1.035); /* Slight zoom effect */
     color: #ffffff; /* Brighter white for text */
+}
+
+.dayReportTable ,.reportTable{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    font-family: "Arial", sans-serif;
+    text-align: left;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dayReportTable thead ,.reportTable thead {
+    background-color: #f4f4f4; /* Soft gray for light theme */
+    color: #333; /* Dark text for contrast */
+}
+
+.dayReportTable th,
+.dayReportTable td,.reportTable th,.reportTable td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.dayReportTable tbody tr:nth-child(even),.reportTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for alternating rows */
+}
+
+.dayReportTable tbody tr:nth-child(odd) ,.reportTable tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* Pure white for alternating rows */
+}
+
+.dayReportTable tbody tr:hover ,.reportTable tbody tr:hover {
+    background-color: #f1f5f8; /* Subtle blue-gray hover effect */
+    cursor: pointer;
+}
+
+.dayReportTable th,.reportTable th {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+    /* text-align: center; */
+}
+
+.dayReportTable tbody td,.reportTable tbody td {
+    color: #555; /* Slightly lighter text for balance */
+    /* text-align: center; */
+}
+
+.dayReportTable caption ,.reportTable caption {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #444;
+    font-weight: bold;
 }
