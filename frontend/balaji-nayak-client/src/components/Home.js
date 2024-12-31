@@ -328,10 +328,21 @@ function Home() {
 
 
   useEffect(() => {
-    // if(reqMonths.length == 0 ) return;
-    console.log('reqMonths: ', reqMonths)
-
-  }, [reqMonths])
+    if(reqMonths.length == 0 ) return;
+    let TempReqDays = []
+    console.log('Logging days for each month:');
+    reqMonths.forEach((month) => TempReqDays.push(month.days));
+    
+    const TempReqDays2 =[]
+    
+    for(let i = 0 ; i < TempReqDays.length; i++){
+      for(let j = 0; j < TempReqDays[i].length; j++)
+        TempReqDays2.push(TempReqDays[i][j])
+    }
+    TempReqDays = TempReqDays2
+    console.log('tempReqDays: ', TempReqDays)
+  }, [reqMonths]);
+  
 
   return (
     <div className='HomeContainer'>
