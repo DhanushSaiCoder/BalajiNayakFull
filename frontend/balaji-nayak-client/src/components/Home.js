@@ -366,9 +366,9 @@ function Home() {
     }
 
     let nonLeisurePeriods = []
-    for(let i in ReqPeriods){
-      for(let p in ReqPeriods[i]){
-        if(!ReqPeriods[i][p].isLeisure){
+    for (let i in ReqPeriods) {
+      for (let p in ReqPeriods[i]) {
+        if (!ReqPeriods[i][p].isLeisure) {
           nonLeisurePeriods.push(ReqPeriods[i][p])
         }
       }
@@ -379,7 +379,11 @@ function Home() {
     })
   }, [reqMonths]);
 
-  console.log('reqPeriods: ',reqPeriods)
+  useEffect(() => {
+    if (reqPeriods.length == 0) return;
+    console.log('reqPeriods: ', reqPeriods)
+  }, [reqPeriods])
+
 
   return (
     <div className='HomeContainer'>
