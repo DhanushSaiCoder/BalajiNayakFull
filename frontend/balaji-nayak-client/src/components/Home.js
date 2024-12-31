@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import '../home.css';
 
 function Home() {
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
   }
+  const currDate = new Date();
+  const currDay = currDate.getDate()
+  const currMonth = currDate.getMonth() + 1; // Months are 0-based, so add 1
+  const currYear = currDate.getFullYear();
+
   const [currPage, setCurrPage] = useState('enterAttendance');
 
   const [currPeriod, setCurrPeriod] = useState(1);
@@ -24,6 +29,24 @@ function Home() {
   });
 
 
+
+  //report states:
+  const [userMonths, setUserMonths] = useState([])
+
+  const [reqMonths, setReqMonths] = useState([])
+
+  const [reqPeriods, setReqPeriods] = useState([])
+
+  const [reportData, setReportData] = useState([])
+
+  const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
+  const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
+
+  const [fromDateObj, setFromDateObj] = useState({})
+  const [toDateObj, setToDateObj] = useState({})
+
+
+
   const [periodData, setPeriodData] = useState({
     class: classValue,
     section: section,
@@ -32,7 +55,7 @@ function Home() {
     branch,
     year
   });
-  const currDate = new Date();
+
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
@@ -127,6 +150,36 @@ function Home() {
     }
   }, [readyToSubmit, data]);
 
+
+  useEffect(() => {
+    if (currPage === 'reports') {
+      console.log('Fetching user months...')
+      fetch('http://localhost:5000/months', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Got Users months.', data.months)
+
+          storeUserMonths(data);
+        }
+        )
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Fetching user months failed!');
+        });
+    }
+  }, [currPage]);
+
+  const storeUserMonths = (data) => {
+    const months = data.months;
+    setUserMonths(months)
+  }
+
   const saveData = (data) => {
     const monthId = data._id;
 
@@ -154,9 +207,264 @@ function Home() {
 
   const generateDayReport = (periods) => {
     const report = periods
-    console.log('report: ', report)
     setDayReport(report);
   }
+
+  const handleFromDateChange = (e) => {
+    setfromDate(e.target.value)
+  }
+
+  const handleToDateChange = (e) => {
+    setToDate(e.target.value)
+
+  }
+
+  const handleGetReport = () => {
+    const [fromyear, frommonth, formdate] = fromDate.split('-').map(Number);
+    setFromDateObj((prev) => {
+      return {
+        ...prev,
+        year: fromyear,
+        month: frommonth,
+        date: formdate
+      }
+    })
+
+    const [toyear, tomonth, todate] = toDate.split('-').map(Number);
+    setToDateObj((prev) => {
+      return {
+        ...prev,
+        year: toyear,
+        month: tomonth,
+        date: todate
+      }
+    })
+
+
+  }
+
+  useEffect(() => {
+    if (Object.keys(fromDateObj).length === 0) return;
+    addValidMonthsFromDate(fromDateObj)
+  }, [fromDateObj]);
+
+
+  useEffect(() => {
+    if (Object.keys(toDateObj).length === 0) return;
+    removeInvalidMonthsToDate(toDateObj)
+  }, [toDateObj]);
+
+  // Utility function to validate date object
+  const validateDateObj = (dateObj) => {
+    return (
+      dateObj &&
+      typeof dateObj.year === "number" &&
+      typeof dateObj.month === "number"
+    );
+  };
+
+  // Add valid months from userMonths to reqMonths
+  const addValidMonthsFromDate = (dateObj) => {
+    if (!validateDateObj(dateObj)) {
+      console.error("Invalid dateObj passed to addValidMonthsFromDate");
+      return;
+    }
+
+    setReqMonths((prev) => {
+      // Filter valid months from userMonths
+      const newMonths = userMonths.filter((month) => {
+        return (
+          month &&
+          typeof month.year === "number" &&
+          typeof month.month === "number" &&
+          (month.year > dateObj.year ||
+            (month.year === dateObj.year && month.month >= dateObj.month))
+        );
+      });
+
+      const combined = [...prev, ...newMonths];
+
+      // Remove months less than from month (dateObj.month) in the combined list
+      const filteredMonths = combined.filter((month) => {
+        return (
+          month.year > dateObj.year ||
+          (month.year === dateObj.year && month.month >= dateObj.month)
+        );
+      });
+
+      // Remove duplicates
+      return filteredMonths.filter(
+        (month, index, self) =>
+          index === self.findIndex((m) => m.year === month.year && m.month === month.month)
+      );
+    });
+  };
+
+
+  // Remove invalid months from reqMonths
+  const removeInvalidMonthsToDate = (dateObj) => {
+    if (!validateDateObj(dateObj)) {
+      console.error("Invalid dateObj passed to removeInvalidMonthsToDate");
+      return;
+    }
+
+    setReqMonths((prev) => {
+      const filtered = prev.filter((month) => {
+        return (
+          month &&
+          typeof month.year === "number" &&
+          typeof month.month === "number" &&
+          (month.year < dateObj.year ||
+            (month.year === dateObj.year && month.month <= dateObj.month))
+        );
+      });
+
+      // Return the same array if no changes, to avoid unnecessary state updates
+      return filtered.length === prev.length ? prev : filtered;
+    });
+  };
+
+
+
+  useEffect(() => {
+    if (reqMonths.length == 0) return;
+    let TempReqDays = []
+    reqMonths.forEach((month) => TempReqDays.push(month.days));
+
+    const TempReqDays2 = []
+
+    for (let i = 0; i < TempReqDays.length; i++) {
+      for (let j = 0; j < TempReqDays[i].length; j++)
+        TempReqDays2.push(TempReqDays[i][j])
+    }
+    TempReqDays = TempReqDays2
+
+    //Remove unwanted days
+
+    let ReqDays = []
+
+    for (let i = 0; i < TempReqDays.length; i++) {
+      const dateString = TempReqDays[i].date;
+      const date = new Date(dateString);
+      const result = {
+        year: date.getUTCFullYear(),
+        month: date.getUTCMonth() + 1, // Months are zero-indexed in JS
+        date: date.getUTCDate()
+      };
+
+
+      //result.year >= fromDateObj.year && month && date - push it to ReqDays;
+      if ((result.year >= fromDateObj.year && result.month >= fromDateObj.month && result.date >= fromDateObj.date) &&
+        (result.year <= toDateObj.year && result.month <= toDateObj.month && result.date <= toDateObj.date)) {
+        ReqDays.push(TempReqDays[i])
+      }
+    }
+
+    // get all the periods from each index of ReqDays
+    let ReqPeriods = []
+    for (let i in ReqDays) {
+      ReqPeriods.push(ReqDays[i].periods)
+    }
+
+    let nonLeisurePeriods = []
+    for (let i in ReqPeriods) {
+      for (let p in ReqPeriods[i]) {
+        if (!ReqPeriods[i][p].isLeisure) {
+          nonLeisurePeriods.push(ReqPeriods[i][p])
+        }
+      }
+    }
+
+    setReqPeriods((prev) => {
+      return [...nonLeisurePeriods]
+    })
+  }, [reqMonths]);
+
+  useEffect(() => {
+    if (reqPeriods.length == 0) return console.log('No classes attended.');
+    console.log('reqPeriods: ', reqPeriods);
+    //convert the reqPeriods data to this format: (neglect duplicates) 
+    // class: 1-A / 11-MPC-2yr-A
+    // regular: 5
+    // substitution: 1
+    // total: 6
+
+    let convertedReqPeriods = []
+    // iterate through the reqPeriods,if not leisure,create an object containing the data above, push to convertedReqPeriods
+
+    for (let i in reqPeriods) {
+      let period = reqPeriods[i]
+      if (!period.isLeisure) {
+        let data = {
+          class: period.class < 11 ?
+            `${period.class}-${period.section}` :
+            `${period.class}-${period.branch}-${period.year}yr-${period.section}`,
+          isSubstitution: period.isSubstitution
+        }
+        convertedReqPeriods.push(data)
+      }
+    }
+
+    console.log('converted reqPeriods: ', convertedReqPeriods)
+
+    //iterate through each period in convertedReqPe
+    // and count its instances when substitution & !substitution, 
+    // if a period not exists in finalData, 
+    // push it
+
+
+    let periods = convertedReqPeriods
+
+    function countPeriods(periods) {
+      let result = [];
+
+      periods.forEach(period => {
+        let existingClass = result.find(item => item.class === period.class);
+
+        if (existingClass) {
+          if (period.isSubstitution) {
+            existingClass.substitution++;
+          } else {
+            existingClass.regular++;
+          }
+        } else {
+          result.push({
+            class: period.class,
+            substitution: period.isSubstitution ? 1 : 0,
+            regular: period.isSubstitution ? 0 : 1
+          });
+        }
+      });
+
+      return result;
+    }
+
+    const addTotal = (periods) => {
+      //for each instance of the periods, 
+      // add total: sub+reg
+      let output = []
+      periods.forEach((period) => {
+        let periodData = {
+          class: period.class,
+          substitution: period.substitution,
+          regular: period.regular,
+          total: period.substitution + period.regular
+        }
+        output.push(periodData)
+      })
+
+      setReportData(output)
+    }
+
+    let finalData = countPeriods(periods);
+    finalData = addTotal(finalData)
+
+  }, [reqPeriods])
+
+
+  reportData.length != 0 && console.log('reportData: ', reportData);
+
+
 
   return (
     <div className='HomeContainer'>
@@ -188,7 +496,56 @@ function Home() {
         <div className='mainContent'>
           {currPage === 'reports' && (
             <>
-              <h1>Reports</h1>
+              <div className='reportsContainer'>
+                <div className='reportsHeader'>
+                  <div id="fromDiv" className='reportsHeaderInputDiv'>
+                    <label htmlFor="from">
+                      FROM:
+                      <input defaultValue={fromDate} onChange={handleFromDateChange} className='dataInp' type="date" id="from" />
+                    </label>
+                  </div>
+                  <div id="toDiv" className='reportsHeaderInputDiv'>
+                    <label htmlFor="from">
+                      TO:
+                      <input defaultValue={fromDate} onChange={handleToDateChange} className='dataInp' type="date" id="from" />
+                    </label>
+                  </div>
+                  <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
+                    <button onClick={handleGetReport}>Get Report</button>
+                  </div>
+                </div>
+                <div className='reportsContent'>
+                  {
+                    reportData.length != 0 && (
+                      <>
+                        <table className='reportTable'>
+                          <thead>
+                            <tr>
+                              <th>CLASS</th>
+                              <th>REGULAR</th>
+                              <th>SUBSTITUTION</th>
+                              <th>TOTAL</th>
+                            </tr>
+
+                          </thead>
+                          <tbody>
+                            {reportData.map((period) => {
+                              return (
+                                <tr key={period.class}>
+                                  <td>{period.class}</td>
+                                  <td>{period.regular}</td>
+                                  <td>{period.substitution}</td>
+                                  <td>{period.total}</td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </>
+                    )
+                  }
+                </div>
+              </div>
             </>
           )}
           {currPage === 'enterAttendance' && !enteredToday && (
