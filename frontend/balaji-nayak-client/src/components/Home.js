@@ -361,10 +361,15 @@ function Home() {
         (result.year <= toDateObj.year && result.month <= toDateObj.month && result.date <= toDateObj.date)) {
         ReqDays.push(TempReqDays[i])
       }
-
-      console.log('ReqDays: ', ReqDays)
-
     }
+    console.log('ReqDays: ', ReqDays)
+
+    // get all the periods from each index of ReqDays
+    let ReqPeriods = []
+    for(let i in ReqDays){
+      ReqPeriods.push(ReqDays[i].periods)
+    }
+    console.log(ReqPeriods)
 
 
   }, [reqMonths]);
