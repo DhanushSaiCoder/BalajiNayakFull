@@ -380,8 +380,33 @@ function Home() {
   }, [reqMonths]);
 
   useEffect(() => {
-    if (reqPeriods.length == 0) return;
-    console.log('reqPeriods: ', reqPeriods)
+    if (reqPeriods.length == 0) return console.log('No classes attended.');
+    console.log('reqPeriods: ', reqPeriods);
+    //convert the reqPeriods data to this format: (neglect duplicates) 
+
+    // class: 1-A / 11-MPC-2yr-A
+    // regular: 5
+    // substitution: 1
+    // total: 6
+
+    let convertedReqPeriods = []
+    // iterate through the reqPeriods,if not leisure,create an object containing the data above, push to convertedReqPeriods
+
+    for (let i in reqPeriods) {
+      let period = reqPeriods[i]
+      if (!period.isLeisure) {
+        let data = {
+          class: period.class < 11 ?
+            `${period.class}-${period.section}` :
+            `${period.class}-${period.branch}-${period.year}yr-${period.section}`,
+          isSubstitution: period.isSubstitution
+        }
+        convertedReqPeriods.push(data)
+      }
+    }
+
+    console.log('converted reqPeriods: ',convertedReqPeriods)
+    
   }, [reqPeriods])
 
 
@@ -434,7 +459,24 @@ function Home() {
                   </div>
                 </div>
                 <div className='reportsContent'>
-                  <h1>Reports</h1>
+                  <h1>Reports content</h1>
+                  {
+                    reqPeriods && reqPeriods.length > 0 && (
+                      <>
+                        <table className='reportTable'>
+                          <thead>
+                            <tr>
+                              <th>CLASS</th>
+                              <th>REGULAR</th>
+                              <th>TOTAL</th>
+                              <th>SUBSTITUTION</th>
+                            </tr>
+
+                          </thead>
+                        </table>
+                      </>
+                    )
+                  }
                 </div>
               </div>
             </>
