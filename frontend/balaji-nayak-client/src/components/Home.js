@@ -364,8 +364,18 @@ function Home() {
     for (let i in ReqDays) {
       ReqPeriods.push(ReqDays[i].periods)
     }
+
+    let nonLeisurePeriods = []
+    for(let i in ReqPeriods){
+      for(let p in ReqPeriods[i]){
+        if(!ReqPeriods[i][p].isLeisure){
+          nonLeisurePeriods.push(ReqPeriods[i][p])
+        }
+      }
+    }
+
     setReqPeriods((prev) => {
-      return [...ReqPeriods]
+      return [...nonLeisurePeriods]
     })
   }, [reqMonths]);
 
