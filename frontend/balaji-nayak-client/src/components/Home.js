@@ -39,8 +39,8 @@ function Home() {
 
   const [reportData, setReportData] = useState([])
 
-  const [fromDate, setfromDate] = useState(`${currYear}-${currMonth}-${currDay}`)
-  const [toDate, setToDate] = useState(`${currYear}-${currMonth}-${currDay}`)
+  const [fromDate, setfromDate] = useState(`${currYear}-${currMonth < 10 && '0'}${currMonth}-${currDay < 10 && '0'}${currDay}`)
+  const [toDate, setToDate] = useState(`${currYear}-${currMonth < 10 && '0'}${currMonth}-${currDay < 10 && '0'}${currDay}`)
 
   const [fromDateObj, setFromDateObj] = useState({})
   const [toDateObj, setToDateObj] = useState({})
