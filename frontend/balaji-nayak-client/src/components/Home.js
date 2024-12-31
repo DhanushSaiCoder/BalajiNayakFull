@@ -328,21 +328,47 @@ function Home() {
 
 
   useEffect(() => {
-    if(reqMonths.length == 0 ) return;
+    if (reqMonths.length == 0) return;
     let TempReqDays = []
     console.log('Logging days for each month:');
     reqMonths.forEach((month) => TempReqDays.push(month.days));
-    
-    const TempReqDays2 =[]
-    
-    for(let i = 0 ; i < TempReqDays.length; i++){
-      for(let j = 0; j < TempReqDays[i].length; j++)
+
+    const TempReqDays2 = []
+
+    for (let i = 0; i < TempReqDays.length; i++) {
+      for (let j = 0; j < TempReqDays[i].length; j++)
         TempReqDays2.push(TempReqDays[i][j])
     }
     TempReqDays = TempReqDays2
-    console.log('tempReqDays: ', TempReqDays)
+
+    //Remove unwanted days
+
+    let ReqDays = []
+
+    for (let i = 0; i < TempReqDays.length; i++) {
+      const dateString = TempReqDays[i].date;
+      const date = new Date(dateString);
+      const result = {
+        year: date.getUTCFullYear(),
+        month: date.getUTCMonth() + 1, // Months are zero-indexed in JS
+        date: date.getUTCDate()
+      };
+
+      // console.log("result",result); // { year: 2024, month: 12, date: 30 }
+
+      //result.year >= fromDateObj.year && month && date - push it to ReqDays;
+      if ((result.year >= fromDateObj.year && result.month >= fromDateObj.month && result.date >= fromDateObj.date) &&
+        (result.year <= toDateObj.year && result.month <= toDateObj.month && result.date <= toDateObj.date)) {
+        ReqDays.push(TempReqDays[i])
+      }
+
+      console.log('ReqDays: ', ReqDays)
+
+    }
+
+
   }, [reqMonths]);
-  
+
 
   return (
     <div className='HomeContainer'>
