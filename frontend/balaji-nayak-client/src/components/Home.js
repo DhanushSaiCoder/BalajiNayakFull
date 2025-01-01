@@ -51,6 +51,7 @@ function Home() {
   //loader states
   const [loading, setLoading] = useState(false)
   const [reportLoading, setReportLoading] = useState(false)
+  const [attendanceSendingLoader, setAttendanceSendingLoader] = useState(false)
 
   const [periodData, setPeriodData] = useState({
     class: classValue,
@@ -115,8 +116,8 @@ function Home() {
         updatedPeriods[currPeriod - 1] = periodData;
         return { ...prevData, periods: updatedPeriods };
       });
-
       setReadyToSubmit(true);
+
     }
   };
 
@@ -134,6 +135,7 @@ function Home() {
 
   useEffect(() => {
     if (readyToSubmit) {
+      setAttendanceSendingLoader(true)
       fetch('http://localhost:5000/months/day', {
         method: 'POST',
         headers: {
@@ -174,7 +176,7 @@ function Home() {
           storeUserMonths(data);
         }
         )
-        .finally(()=> {
+        .finally(() => {
           setLoading(false)
         })
         .catch((error) => {
@@ -216,6 +218,7 @@ function Home() {
 
   const generateDayReport = (periods) => {
     const report = periods
+    setAttendanceSendingLoader(false)
     setDayReport(report);
   }
 
@@ -517,7 +520,7 @@ function Home() {
         <div className='mainContent'>
           {currPage === 'reports' && (
             <>
-              <div style={loading ? {justifyContent:"center"}:{justifyContent:"flex-start"}} className='reportsContainer'>
+              <div style={loading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContainer'>
                 {!loading && (<div className='reportsHeader'>
                   <div id="fromDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
@@ -535,7 +538,7 @@ function Home() {
                     <button onClick={handleGetReport}>Get Report</button>
                   </div>
                 </div>)}
-                <div className='reportsContent'>
+                <div  style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }}  className='reportsContent'>
                   {loading && (
                     <SyncLoader
                       color="#181406"
@@ -546,7 +549,7 @@ function Home() {
                       speedMultiplier={0.7}
                     />
                   )}
-                  { 
+                  {
                     reportData.length != 0 && !reportLoading && !loading && (
                       <>
                         <table className='reportTable'>
@@ -586,7 +589,7 @@ function Home() {
                         data-testid="loader"
                         speedMultiplier={0.7}
                       />
-                      
+
                     )
                   }
                 </div>
@@ -601,10 +604,10 @@ function Home() {
                     {!submitted && (
                       <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
                     )}
-                    {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Attendance Submitted</h2>}
+                    {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Today Report</h2>}
                   </div>
                   <div className='enterAttendanceContentContainer'>
-                    {!submitted && (
+                    {!submitted && !attendanceSendingLoader && (
                       <div className='enterAttendanceContent'>
                         <div className='container'>
                           <div className="checkbox-group">
@@ -687,7 +690,6 @@ function Home() {
                     )}
                     {dayReport.length > 0 && (
                       <div className='dayReport'>
-                        <h3>Day Report</h3>
                         <table className='dayReportTable'>
                           <thead>
                             <tr>
@@ -723,6 +725,16 @@ function Home() {
                         </div>
                       </div>
 
+                    )}
+
+                    {attendanceSendingLoader && (
+                      <SyncLoader
+                        color="black"
+                        loading={true}
+                        size={12}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
                     )}
                   </div>
                 </div>
