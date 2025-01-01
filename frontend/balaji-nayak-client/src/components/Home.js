@@ -1,5 +1,7 @@
 import React, { useState, useEffect, use } from 'react';
 import '../home.css';
+import ClipLoader from "react-spinners/ClipLoader";
+import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
 
 function Home() {
   if (!localStorage.getItem('BNtoken')) {
@@ -23,7 +25,7 @@ function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [dayReport, setDayReport] = useState([]);
   const [enteredToday, setEnteredToday] = useState(false);
-  
+
   const [data, setData] = useState({
     date: new Date().toISOString(),
     periods: [{}, {}, {}, {}, {}, {}, {}, {}]
@@ -46,7 +48,8 @@ function Home() {
   const [fromDateObj, setFromDateObj] = useState({})
   const [toDateObj, setToDateObj] = useState({})
 
-
+  //loader states
+  const [loading, setLoading] = useState(false)
 
   const [periodData, setPeriodData] = useState({
     class: classValue,
@@ -155,6 +158,7 @@ function Home() {
   useEffect(() => {
     if (currPage === 'reports') {
       console.log('Fetching user months...')
+      setLoading(true)
       fetch('http://localhost:5000/months', {
         method: 'GET',
         headers: {
@@ -169,6 +173,9 @@ function Home() {
           storeUserMonths(data);
         }
         )
+        .finally(()=> {
+          setLoading(false)
+        })
         .catch((error) => {
           console.error('Error:', error);
           alert('Fetching user months failed!');
@@ -325,153 +332,153 @@ function Home() {
     });
   };
 
-useEffect(() => {
-  if (reqMonths.length == 0) return;
+  useEffect(() => {
+    if (reqMonths.length == 0) return;
 
-  let TempReqDays = []
-  reqMonths.forEach((month) => TempReqDays.push(month.days));
+    let TempReqDays = []
+    reqMonths.forEach((month) => TempReqDays.push(month.days));
 
-  const TempReqDays2 = []
+    const TempReqDays2 = []
 
-  // Flatten the TempReqDays array
-  for (let i = 0; i < TempReqDays.length; i++) {
-    for (let j = 0; j < TempReqDays[i].length; j++)
-      TempReqDays2.push(TempReqDays[i][j])
-  }
-  TempReqDays = TempReqDays2
-
-  console.log('TempReqDays after flattening:', TempReqDays);
-
-  // Filter days based on date range
-  let ReqDays = []
-
-  for (let i = 0; i < TempReqDays.length; i++) {
-    const dateString = TempReqDays[i].date;
-    const date = new Date(dateString);
-    const result = {
-      year: date.getUTCFullYear(),
-      month: date.getUTCMonth() + 1,  // Adjust for 0-indexed months
-      date: date.getUTCDate()
-    };
-
-    console.log('Checking date:', result);
-
-    // Log the `fromDateObj` and `toDateObj` values for comparison
-    console.log('fromDateObj:', fromDateObj);
-    console.log('toDateObj:', toDateObj);
-
-    // Check if the date is within the range
-    if (
-      (result.year > fromDateObj.year || 
-        (result.year === fromDateObj.year && result.month > fromDateObj.month) || 
-        (result.year === fromDateObj.year && result.month === fromDateObj.month && result.date >= fromDateObj.date)) &&
-      (result.year < toDateObj.year || 
-        (result.year === toDateObj.year && result.month < toDateObj.month) || 
-        (result.year === toDateObj.year && result.month === toDateObj.month && result.date <= toDateObj.date))
-    ) {
-      ReqDays.push(TempReqDays[i]);
+    // Flatten the TempReqDays array
+    for (let i = 0; i < TempReqDays.length; i++) {
+      for (let j = 0; j < TempReqDays[i].length; j++)
+        TempReqDays2.push(TempReqDays[i][j])
     }
-  }
+    TempReqDays = TempReqDays2
 
-  console.log('Filtered ReqDays within date range:', ReqDays);
+    console.log('TempReqDays after flattening:', TempReqDays);
 
-  // Get periods from filtered ReqDays
-  let ReqPeriods = []
-  for (let i in ReqDays) {
-    ReqPeriods.push(ReqDays[i].periods)
-  }
+    // Filter days based on date range
+    let ReqDays = []
 
-  console.log('ReqPeriods from ReqDays:', ReqPeriods);
+    for (let i = 0; i < TempReqDays.length; i++) {
+      const dateString = TempReqDays[i].date;
+      const date = new Date(dateString);
+      const result = {
+        year: date.getUTCFullYear(),
+        month: date.getUTCMonth() + 1,  // Adjust for 0-indexed months
+        date: date.getUTCDate()
+      };
 
-  // Filter out leisure periods
-  let nonLeisurePeriods = []
-  for (let i in ReqPeriods) {
-    for (let p in ReqPeriods[i]) {
-      if (!ReqPeriods[i][p].isLeisure) {
-        nonLeisurePeriods.push(ReqPeriods[i][p])
+      console.log('Checking date:', result);
+
+      // Log the `fromDateObj` and `toDateObj` values for comparison
+      console.log('fromDateObj:', fromDateObj);
+      console.log('toDateObj:', toDateObj);
+
+      // Check if the date is within the range
+      if (
+        (result.year > fromDateObj.year ||
+          (result.year === fromDateObj.year && result.month > fromDateObj.month) ||
+          (result.year === fromDateObj.year && result.month === fromDateObj.month && result.date >= fromDateObj.date)) &&
+        (result.year < toDateObj.year ||
+          (result.year === toDateObj.year && result.month < toDateObj.month) ||
+          (result.year === toDateObj.year && result.month === toDateObj.month && result.date <= toDateObj.date))
+      ) {
+        ReqDays.push(TempReqDays[i]);
       }
     }
-  }
 
-  console.log('nonLeisurePeriods:', nonLeisurePeriods);
+    console.log('Filtered ReqDays within date range:', ReqDays);
 
-  setReqPeriods((prev) => {
-    return [...nonLeisurePeriods]
-  })
-}, [reqMonths]);
-
-useEffect(() => {
-  if (reqPeriods.length == 0) return console.log('No classes attended.');
-  
-  console.log('reqPeriods:', reqPeriods);
-
-  // Convert the reqPeriods data to the required format
-  let convertedReqPeriods = []
-  
-  for (let i in reqPeriods) {
-    let period = reqPeriods[i]
-    if (!period.isLeisure) {
-      let data = {
-        class: period.class < 11 ?
-          `${period.class}-${period.section}` :
-          `${period.class}-${period.branch}-${period.year}yr-${period.section}`,
-        isSubstitution: period.isSubstitution
-      }
-      convertedReqPeriods.push(data)
+    // Get periods from filtered ReqDays
+    let ReqPeriods = []
+    for (let i in ReqDays) {
+      ReqPeriods.push(ReqDays[i].periods)
     }
-  }
 
-  console.log('converted reqPeriods:', convertedReqPeriods);
+    console.log('ReqPeriods from ReqDays:', ReqPeriods);
 
-  // Function to count periods
-  let periods = convertedReqPeriods
-
-  function countPeriods(periods) {
-    let result = [];
-
-    periods.forEach(period => {
-      let existingClass = result.find(item => item.class === period.class);
-
-      if (existingClass) {
-        if (period.isSubstitution) {
-          existingClass.substitution++;
-        } else {
-          existingClass.regular++;
+    // Filter out leisure periods
+    let nonLeisurePeriods = []
+    for (let i in ReqPeriods) {
+      for (let p in ReqPeriods[i]) {
+        if (!ReqPeriods[i][p].isLeisure) {
+          nonLeisurePeriods.push(ReqPeriods[i][p])
         }
-      } else {
-        result.push({
-          class: period.class,
-          substitution: period.isSubstitution ? 1 : 0,
-          regular: period.isSubstitution ? 0 : 1
-        });
       }
-    });
+    }
 
-    console.log('countPeriods result:', result);
-    return result;
-  }
+    console.log('nonLeisurePeriods:', nonLeisurePeriods);
 
-  const addTotal = (periods) => {
-    // Add total count (substitution + regular)
-    let output = []
-    periods.forEach((period) => {
-      let periodData = {
-        class: period.class,
-        substitution: period.substitution,
-        regular: period.regular,
-        total: period.substitution + period.regular
-      }
-      output.push(periodData)
+    setReqPeriods((prev) => {
+      return [...nonLeisurePeriods]
     })
+  }, [reqMonths]);
 
-    console.log('Output after adding total:', output);
-    setReportData(output)
-  }
+  useEffect(() => {
+    if (reqPeriods.length == 0) return console.log('No classes attended.');
 
-  let finalData = countPeriods(periods);
-  addTotal(finalData)
+    console.log('reqPeriods:', reqPeriods);
 
-}, [reqPeriods]);
+    // Convert the reqPeriods data to the required format
+    let convertedReqPeriods = []
+
+    for (let i in reqPeriods) {
+      let period = reqPeriods[i]
+      if (!period.isLeisure) {
+        let data = {
+          class: period.class < 11 ?
+            `${period.class}-${period.section}` :
+            `${period.class}-${period.branch}-${period.year}yr-${period.section}`,
+          isSubstitution: period.isSubstitution
+        }
+        convertedReqPeriods.push(data)
+      }
+    }
+
+    console.log('converted reqPeriods:', convertedReqPeriods);
+
+    // Function to count periods
+    let periods = convertedReqPeriods
+
+    function countPeriods(periods) {
+      let result = [];
+
+      periods.forEach(period => {
+        let existingClass = result.find(item => item.class === period.class);
+
+        if (existingClass) {
+          if (period.isSubstitution) {
+            existingClass.substitution++;
+          } else {
+            existingClass.regular++;
+          }
+        } else {
+          result.push({
+            class: period.class,
+            substitution: period.isSubstitution ? 1 : 0,
+            regular: period.isSubstitution ? 0 : 1
+          });
+        }
+      });
+
+      console.log('countPeriods result:', result);
+      return result;
+    }
+
+    const addTotal = (periods) => {
+      // Add total count (substitution + regular)
+      let output = []
+      periods.forEach((period) => {
+        let periodData = {
+          class: period.class,
+          substitution: period.substitution,
+          regular: period.regular,
+          total: period.substitution + period.regular
+        }
+        output.push(periodData)
+      })
+
+      console.log('Output after adding total:', output);
+      setReportData(output)
+    }
+
+    let finalData = countPeriods(periods);
+    addTotal(finalData)
+
+  }, [reqPeriods]);
 
   reportData.length != 0 && console.log('reportData: ', reportData);
 
@@ -507,8 +514,8 @@ useEffect(() => {
         <div className='mainContent'>
           {currPage === 'reports' && (
             <>
-              <div className='reportsContainer'>
-                <div className='reportsHeader'>
+              <div style={loading ? {justifyContent:"center"}:{justifyContent:"flex-start"}} className='reportsContainer'>
+                {!loading && (<div className='reportsHeader'>
                   <div id="fromDiv" className='reportsHeaderInputDiv'>
                     <label htmlFor="from">
                       FROM:
@@ -524,10 +531,20 @@ useEffect(() => {
                   <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
                     <button onClick={handleGetReport}>Get Report</button>
                   </div>
-                </div>
+                </div>)}
                 <div className='reportsContent'>
-                  {
-                    reportData.length != 0 && (
+                  {loading && (
+                    <SyncLoader
+                      color="#181406"
+                      loading={true}
+                      size={12}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                      speedMultiplier={0.7}
+                    />
+                  )}
+                  { 
+                    reportData.length != 0 && !loading (
                       <>
                         <table className='reportTable'>
                           <thead>
@@ -702,7 +719,13 @@ useEffect(() => {
               <a href="/">Enter Again</a>
             </>
           )}
-
+          {/* <SyncLoader
+            color="black"
+            loading={true}
+            size={12}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          /> */}
 
         </div>
       </main>
