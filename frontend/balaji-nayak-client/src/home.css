@@ -290,7 +290,7 @@ label {
 }
 .substitutionRow {
     background-color: rgba(255, 238, 0, 0.237);
-    text-align: center;
+    /* text-align: center; */
 }
 .dayReport {
     display: flex;

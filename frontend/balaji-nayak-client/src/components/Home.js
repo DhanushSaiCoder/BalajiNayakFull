@@ -23,6 +23,7 @@ function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [dayReport, setDayReport] = useState([]);
   const [enteredToday, setEnteredToday] = useState(false);
+  
   const [data, setData] = useState({
     date: new Date().toISOString(),
     periods: [{}, {}, {}, {}, {}, {}, {}, {}]
