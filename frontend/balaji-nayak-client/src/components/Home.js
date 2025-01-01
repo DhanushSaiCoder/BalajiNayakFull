@@ -50,6 +50,7 @@ function Home() {
 
   //loader states
   const [loading, setLoading] = useState(false)
+  const [reportLoading, setReportLoading] = useState(false)
 
   const [periodData, setPeriodData] = useState({
     class: classValue,
@@ -228,6 +229,7 @@ function Home() {
   }
 
   const handleGetReport = () => {
+    setReportLoading(true)
     const [fromyear, frommonth, formdate] = fromDate.split('-').map(Number);
     setFromDateObj((prev) => {
       return {
@@ -472,6 +474,7 @@ function Home() {
       })
 
       console.log('Output after adding total:', output);
+      setReportLoading(false)
       setReportData(output)
     }
 
@@ -544,7 +547,7 @@ function Home() {
                     />
                   )}
                   { 
-                    reportData.length != 0 && !loading (
+                    reportData.length != 0 && !reportLoading && !loading && (
                       <>
                         <table className='reportTable'>
                           <thead>
@@ -570,6 +573,20 @@ function Home() {
                           </tbody>
                         </table>
                       </>
+                    )
+                  }
+                  {
+                    reportData.length != 0 && reportLoading && (
+                      <SyncLoader
+
+                        color="#181406"
+                        loading={true}
+                        size={12}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                        speedMultiplier={0.7}
+                      />
+                      
                     )
                   }
                 </div>
