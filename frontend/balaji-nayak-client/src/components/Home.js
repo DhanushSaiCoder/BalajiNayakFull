@@ -70,6 +70,8 @@ function Home() {
   const [rowLimit, setRowLimit] = useState(5)
   const [paginationRequired, setPaginationRequired] = useState(false)
   const [paginatedReportData, setPaginatedReportData] = useState([])
+  const [tableNextPageValid, setTableNextPageValid] = useState(true)
+  const [tablePrevPageValid, setTablePrevPageValid] = useState(true)
 
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -512,6 +514,7 @@ function Home() {
   }, [reqPeriods]);
 
   const handlePaginationNext = () => {
+
     setCurrTablePage(prev => { return prev + 1 })
   }
   const handlePaginationPrev = () => {
@@ -529,14 +532,27 @@ function Home() {
   useEffect(() => {
     const a = (currTablePage - 1) * rowLimit;
     const z = currTablePage * rowLimit;
-  
+
     const newPaginatedData = reportData.filter((_, index) => index >= a && index < z);
-  
+
     setPaginatedReportData(newPaginatedData);
-  
+
+    if (Math.ceil(reportData.length / rowLimit) == currTablePage) {
+      setTableNextPageValid(false)
+    }
+    else {
+      setTableNextPageValid(true)
+    }
+
+    if(currTablePage == 1){
+      setTablePrevPageValid(false)
+    }
+    else{
+      setTablePrevPageValid(true)
+    }
     console.log('Paginated report data: ', newPaginatedData);
   }, [currTablePage, reportData, rowLimit]);
-  
+
 
   return (
     <div className='HomeContainer'>
@@ -664,8 +680,8 @@ function Home() {
                   }
                   {!noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
                     <div className='prevNextBtnDiv'>
-                      <button onClick={handlePaginationPrev} className='tablePrev'>Previous</button>
-                      <button onClick={handlePaginationNext} className='tableNext'>Next</button>
+                      <button disabled={!tablePrevPageValid}  onClick={handlePaginationPrev} className='tablePrev'>Previous</button>
+                      <button disabled={!tableNextPageValid} onClick={handlePaginationNext} className='tableNext'>Next</button>
                     </div>
                   )}
                 </div>
