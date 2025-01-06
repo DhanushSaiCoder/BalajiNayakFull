@@ -69,6 +69,7 @@ function Home() {
   const [currTablePage, setCurrTablePage] = useState(1)
   const [rowLimit, setRowLimit] = useState(5)
   const [paginationRequired, setPaginationRequired] = useState(false)
+  const [paginatedReportData, setPaginatedReportData] = useState([])
 
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -522,9 +523,20 @@ function Home() {
     })
 
   }
-  console.log('current Table page: ', currTablePage)
 
+  // pagination useEffect if currTablePage changes
 
+  useEffect(() => {
+    const a = (currTablePage - 1) * rowLimit;
+    const z = currTablePage * rowLimit;
+  
+    const newPaginatedData = reportData.filter((_, index) => index >= a && index < z);
+  
+    setPaginatedReportData(newPaginatedData);
+  
+    console.log('Paginated report data: ', newPaginatedData);
+  }, [currTablePage, reportData, rowLimit]);
+  
 
   return (
     <div className='HomeContainer'>
@@ -621,7 +633,7 @@ function Home() {
 
                           </thead>
                           <tbody>
-                            {reportData.map((period) => {
+                            {paginatedReportData.map((period) => {
                               return (
                                 <tr key={period.class}>
                                   <td>{period.class}</td>
@@ -650,7 +662,7 @@ function Home() {
 
                     )
                   }
-                  {!noData && reportData.length != 0 && !reportLoading && !loading && (
+                  {!noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
                     <div className='prevNextBtnDiv'>
                       <button onClick={handlePaginationPrev} className='tablePrev'>Previous</button>
                       <button onClick={handlePaginationNext} className='tableNext'>Next</button>
