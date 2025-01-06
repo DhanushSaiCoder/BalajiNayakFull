@@ -1,10 +1,14 @@
 import React, { useState, useEffect, use } from 'react';
 import '../home.css';
+import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
 
 function Home() {
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
   }
+  const [gotUserEmail, setGotUserEmail] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
+
   const currDate = new Date();
   const currDay = currDate.getDate()
   const currMonth = currDate.getMonth() + 1; // Months are 0-based, so add 1
@@ -23,7 +27,7 @@ function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [dayReport, setDayReport] = useState([]);
   const [enteredToday, setEnteredToday] = useState(false);
-  
+
   const [data, setData] = useState({
     date: new Date().toISOString(),
     periods: [{}, {}, {}, {}, {}, {}, {}, {}]
@@ -46,7 +50,11 @@ function Home() {
   const [fromDateObj, setFromDateObj] = useState({})
   const [toDateObj, setToDateObj] = useState({})
 
-
+  const [noData,setNoData] = useState(true)
+  //loader states
+  const [loading, setLoading] = useState(false)
+  const [reportLoading, setReportLoading] = useState(false)
+  const [attendanceSendingLoader, setAttendanceSendingLoader] = useState(false)
 
   const [periodData, setPeriodData] = useState({
     class: classValue,
@@ -111,8 +119,8 @@ function Home() {
         updatedPeriods[currPeriod - 1] = periodData;
         return { ...prevData, periods: updatedPeriods };
       });
-
       setReadyToSubmit(true);
+
     }
   };
 
@@ -129,63 +137,9 @@ function Home() {
   }
 
   useEffect(() => {
-    if (readyToSubmit) {
-      fetch('http://localhost:5000/months/day', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
-        },
-        body: JSON.stringify(data)
-      })
-        .then(response => response.json())
-        .then(data => {
-          setReadyToSubmit(false);
-          saveData(data);
-          setSubmitted(true);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('Attendance entry failed!');
-        });
-    }
-  }, [readyToSubmit, data]);
+    if (gotUserEmail) return;
 
-
-  useEffect(() => {
-    if (currPage === 'reports') {
-      console.log('Fetching user months...')
-      fetch('http://localhost:5000/months', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Got Users months.', data.months)
-
-          storeUserMonths(data);
-        }
-        )
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('Fetching user months failed!');
-        });
-    }
-  }, [currPage]);
-
-  const storeUserMonths = (data) => {
-    const months = data.months;
-    setUserMonths(months)
-  }
-
-  const saveData = (data) => {
-    const monthId = data._id;
-
-    // Fetch day by sending GET request to /months/day with JWT token in headers
-    fetch(`http://localhost:5000/months/${monthId}`, {
+    fetch('http://localhost:5000/months/email', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -194,136 +148,220 @@ function Home() {
     })
       .then(response => response.json())
       .then(data => {
-        const date = new Date().toISOString().split('T')[0]; // Extract only the date part
-        const day = data.days.find(day => day.date.split('T')[0] === date) || { 'day not found': true };
-        const periods = day.periods;
-        generateDayReport(periods);
+        setUserEmail(data.email);
+        // setUserEmail(data);
+      })
+      .finally(() => setGotUserEmail(true))
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Email fetching failed!');
+      });
+  }, [gotUserEmail]);
 
+
+
+
+useEffect(() => {
+  if (readyToSubmit) {
+    setAttendanceSendingLoader(true)
+    fetch('http://localhost:5000/months/day', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        setReadyToSubmit(false);
+        saveData(data);
+        setSubmitted(true);
       })
       .catch((error) => {
         console.error('Error:', error);
-        alert('Fetching day failed!');
+        alert('Attendance entry failed!');
       });
-  };
-
-  const generateDayReport = (periods) => {
-    const report = periods
-    setDayReport(report);
   }
+}, [readyToSubmit, data]);
 
-  const handleFromDateChange = (e) => {
-    setfromDate(e.target.value)
-  }
 
-  const handleToDateChange = (e) => {
-    setToDate(e.target.value)
-
-  }
-
-  const handleGetReport = () => {
-    const [fromyear, frommonth, formdate] = fromDate.split('-').map(Number);
-    setFromDateObj((prev) => {
-      return {
-        ...prev,
-        year: fromyear,
-        month: frommonth,
-        date: formdate
+useEffect(() => {
+  if (currPage === 'reports') {
+    setLoading(true)
+    fetch('http://localhost:5000/months', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
       }
     })
+      .then(response => response.json())
+      .then(data => {
 
-    const [toyear, tomonth, todate] = toDate.split('-').map(Number);
-    setToDateObj((prev) => {
-      return {
-        ...prev,
-        year: toyear,
-        month: tomonth,
-        date: todate
+        storeUserMonths(data);
       }
-    })
-
-
+      )
+      .finally(() => {
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Fetching user months failed!');
+      });
   }
+}, [currPage]);
 
-  useEffect(() => {
-    if (Object.keys(fromDateObj).length === 0) return;
-    addValidMonthsFromDate(fromDateObj)
-  }, [fromDateObj]);
+const storeUserMonths = (data) => {
+  const months = data.months;
+  setUserMonths(months)
+}
 
+const saveData = (data) => {
+  const monthId = data._id;
 
-  useEffect(() => {
-    if (Object.keys(toDateObj).length === 0) return;
-    removeInvalidMonthsToDate(toDateObj)
-  }, [toDateObj]);
-
-  // Utility function to validate date object
-  const validateDateObj = (dateObj) => {
-    return (
-      dateObj &&
-      typeof dateObj.year === "number" &&
-      typeof dateObj.month === "number"
-    );
-  };
-
-  // Add valid months from userMonths to reqMonths
-  const addValidMonthsFromDate = (dateObj) => {
-    if (!validateDateObj(dateObj)) {
-      console.error("Invalid dateObj passed to addValidMonthsFromDate");
-      return;
+  // Fetch day by sending GET request to /months/day with JWT token in headers
+  fetch(`http://localhost:5000/months/${monthId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('BNtoken')}`
     }
+  })
+    .then(response => response.json())
+    .then(data => {
+      const date = new Date().toISOString().split('T')[0]; // Extract only the date part
+      const day = data.days.find(day => day.date.split('T')[0] === date) || { 'day not found': true };
+      const periods = day.periods;
+      generateDayReport(periods);
 
-    setReqMonths((prev) => {
-      // Filter valid months from userMonths
-      const newMonths = userMonths.filter((month) => {
-        return (
-          month &&
-          typeof month.year === "number" &&
-          typeof month.month === "number" &&
-          (month.year > dateObj.year ||
-            (month.year === dateObj.year && month.month >= dateObj.month))
-        );
-      });
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Fetching day failed!');
+    });
+};
 
-      const combined = [...prev, ...newMonths];
+const generateDayReport = (periods) => {
+  const report = periods
+  setAttendanceSendingLoader(false)
+  setDayReport(report);
+}
 
-      // Remove months less than from month (dateObj.month) in the combined list
-      const filteredMonths = combined.filter((month) => {
-        return (
-          month.year > dateObj.year ||
-          (month.year === dateObj.year && month.month >= dateObj.month)
-        );
-      });
+const handleFromDateChange = (e) => {
+  setfromDate(e.target.value)
+}
 
-      // Remove duplicates
-      return filteredMonths.filter(
-        (month, index, self) =>
-          index === self.findIndex((m) => m.year === month.year && m.month === month.month)
+const handleToDateChange = (e) => {
+  setToDate(e.target.value)
+
+}
+
+const handleGetReport = () => {
+  setReportLoading(true)
+  const [fromyear, frommonth, formdate] = fromDate.split('-').map(Number);
+  setFromDateObj((prev) => {
+    return {
+      ...prev,
+      year: fromyear,
+      month: frommonth,
+      date: formdate
+    }
+  })
+
+  const [toyear, tomonth, todate] = toDate.split('-').map(Number);
+  setToDateObj((prev) => {
+    return {
+      ...prev,
+      year: toyear,
+      month: tomonth,
+      date: todate
+    }
+  })
+
+
+}
+
+useEffect(() => {
+  if (Object.keys(fromDateObj).length === 0) return;
+  addValidMonthsFromDate(fromDateObj)
+}, [fromDateObj]);
+
+
+useEffect(() => {
+  if (Object.keys(toDateObj).length === 0) return;
+  removeInvalidMonthsToDate(toDateObj)
+}, [toDateObj]);
+
+// Utility function to validate date object
+const validateDateObj = (dateObj) => {
+  return (
+    dateObj &&
+    typeof dateObj.year === "number" &&
+    typeof dateObj.month === "number"
+  );
+};
+
+// Add valid months from userMonths to reqMonths
+const addValidMonthsFromDate = (dateObj) => {
+  if (!validateDateObj(dateObj)) {
+    console.error("Invalid dateObj passed to addValidMonthsFromDate");
+    return;
+  }
+
+  setReqMonths((prev) => {
+    // Filter valid months from userMonths
+    const newMonths = userMonths.filter((month) => {
+      return (
+        month &&
+        typeof month.year === "number" &&
+        typeof month.month === "number" &&
+        (month.year > dateObj.year ||
+          (month.year === dateObj.year && month.month >= dateObj.month))
       );
     });
-  };
 
+    const combined = [...prev, ...newMonths];
 
-  // Remove invalid months from reqMonths
-  const removeInvalidMonthsToDate = (dateObj) => {
-    if (!validateDateObj(dateObj)) {
-      console.error("Invalid dateObj passed to removeInvalidMonthsToDate");
-      return;
-    }
-
-    setReqMonths((prev) => {
-      const filtered = prev.filter((month) => {
-        return (
-          month &&
-          typeof month.year === "number" &&
-          typeof month.month === "number" &&
-          (month.year < dateObj.year ||
-            (month.year === dateObj.year && month.month <= dateObj.month))
-        );
-      });
-
-      // Return the same array if no changes, to avoid unnecessary state updates
-      return filtered.length === prev.length ? prev : filtered;
+    // Remove months less than from month (dateObj.month) in the combined list
+    const filteredMonths = combined.filter((month) => {
+      return (
+        month.year > dateObj.year ||
+        (month.year === dateObj.year && month.month >= dateObj.month)
+      );
     });
-  };
+
+    // Remove duplicates
+    return filteredMonths.filter(
+      (month, index, self) =>
+        index === self.findIndex((m) => m.year === month.year && m.month === month.month)
+    );
+  });
+};
+
+
+// Remove invalid months from reqMonths
+const removeInvalidMonthsToDate = (dateObj) => {
+  if (!validateDateObj(dateObj)) {
+    console.error("Invalid dateObj passed to removeInvalidMonthsToDate");
+    return;
+  }
+
+  setReqMonths((prev) => {
+    const filtered = prev.filter((month) => {
+      return (
+        month &&
+        typeof month.year === "number" &&
+        typeof month.month === "number" &&
+        (month.year < dateObj.year ||
+          (month.year === dateObj.year && month.month <= dateObj.month))
+      );
+    });
+
+    // Return the same array if no changes, to avoid unnecessary state updates
+    return filtered.length === prev.length ? prev : filtered;
+  });
+};
 
 useEffect(() => {
   if (reqMonths.length == 0) return;
@@ -340,7 +378,6 @@ useEffect(() => {
   }
   TempReqDays = TempReqDays2
 
-  console.log('TempReqDays after flattening:', TempReqDays);
 
   // Filter days based on date range
   let ReqDays = []
@@ -354,26 +391,22 @@ useEffect(() => {
       date: date.getUTCDate()
     };
 
-    console.log('Checking date:', result);
 
     // Log the `fromDateObj` and `toDateObj` values for comparison
-    console.log('fromDateObj:', fromDateObj);
-    console.log('toDateObj:', toDateObj);
 
     // Check if the date is within the range
     if (
-      (result.year > fromDateObj.year || 
-        (result.year === fromDateObj.year && result.month > fromDateObj.month) || 
+      (result.year > fromDateObj.year ||
+        (result.year === fromDateObj.year && result.month > fromDateObj.month) ||
         (result.year === fromDateObj.year && result.month === fromDateObj.month && result.date >= fromDateObj.date)) &&
-      (result.year < toDateObj.year || 
-        (result.year === toDateObj.year && result.month < toDateObj.month) || 
+      (result.year < toDateObj.year ||
+        (result.year === toDateObj.year && result.month < toDateObj.month) ||
         (result.year === toDateObj.year && result.month === toDateObj.month && result.date <= toDateObj.date))
     ) {
       ReqDays.push(TempReqDays[i]);
     }
   }
 
-  console.log('Filtered ReqDays within date range:', ReqDays);
 
   // Get periods from filtered ReqDays
   let ReqPeriods = []
@@ -381,7 +414,6 @@ useEffect(() => {
     ReqPeriods.push(ReqDays[i].periods)
   }
 
-  console.log('ReqPeriods from ReqDays:', ReqPeriods);
 
   // Filter out leisure periods
   let nonLeisurePeriods = []
@@ -393,7 +425,6 @@ useEffect(() => {
     }
   }
 
-  console.log('nonLeisurePeriods:', nonLeisurePeriods);
 
   setReqPeriods((prev) => {
     return [...nonLeisurePeriods]
@@ -401,13 +432,12 @@ useEffect(() => {
 }, [reqMonths]);
 
 useEffect(() => {
-  if (reqPeriods.length == 0) return console.log('No classes attended.');
-  
-  console.log('reqPeriods:', reqPeriods);
+
+
 
   // Convert the reqPeriods data to the required format
   let convertedReqPeriods = []
-  
+
   for (let i in reqPeriods) {
     let period = reqPeriods[i]
     if (!period.isLeisure) {
@@ -421,7 +451,6 @@ useEffect(() => {
     }
   }
 
-  console.log('converted reqPeriods:', convertedReqPeriods);
 
   // Function to count periods
   let periods = convertedReqPeriods
@@ -447,7 +476,7 @@ useEffect(() => {
       }
     });
 
-    console.log('countPeriods result:', result);
+
     return result;
   }
 
@@ -464,7 +493,10 @@ useEffect(() => {
       output.push(periodData)
     })
 
-    console.log('Output after adding total:', output);
+
+    setReportLoading(false)
+    if(output.length == 0) setNoData(true) 
+    else setNoData(false)
     setReportData(output)
   }
 
@@ -473,241 +505,301 @@ useEffect(() => {
 
 }, [reqPeriods]);
 
-  reportData.length != 0 && console.log('reportData: ', reportData);
 
 
 
-  return (
-    <div className='HomeContainer'>
-      <div className='leftNav'>
-        <div className='navHeaderDiv'>
-          <h1>ATTENDANCE TRACKER</h1>
-        </div>
-        <div className='navContentDiv'>
-          <button onClick={() => handlePageChange('enterAttendance')} className={currPage === 'enterAttendance' ? 'navButtons activeNavBtn' : 'navButtons'}>Enter Attendance</button>
-          <button onClick={() => handlePageChange('reports')} className={currPage === 'reports' ? 'navButtons activeNavBtn' : 'navButtons'}>Reports</button>
-        </div>
-        <div className='navFooterDiv'>
-          <p>dhanushsai1467@gmail.com</p>
-        </div>
+return (
+  <div className='HomeContainer'>
+    <div className='leftNav'>
+      <div className='navHeaderDiv'>
+        <h1>ATTENDANCE TRACKER</h1>
       </div>
+      <div className='navContentDiv'>
+        <button onClick={() => handlePageChange('enterAttendance')} className={currPage === 'enterAttendance' ? 'navButtons activeNavBtn' : 'navButtons'}>Enter Attendance</button>
+        <button onClick={() => handlePageChange('reports')} className={currPage === 'reports' ? 'navButtons activeNavBtn' : 'navButtons'}>Reports</button>
+      </div>
+      <div className='navFooterDiv'>
+        {
+          !gotUserEmail && (
+            <SyncLoader
+              color="#fff"
+              loading={true}
+              size={7}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+              speedMultiplier={0.7}
+            />
+          )
+        }
+        {
+          gotUserEmail && (
+            <p>{userEmail}</p>
+          )
+        }
+      </div>
+    </div>
 
-      <main>
-        <div className='mainHeader'>
-          <button onClick={() => {
-            localStorage.removeItem('BNtoken')
-            window.location.href = '/login'
-          }} className='logoutBtn'>Log Out</button>
-        </div>
-        <div className='contentHeader'>
-          <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
-          {currPage === 'enterAttendance' && <p className='secondaryTxt'>Date: {formattedDate}</p>}
+    <main>
+      <div className='mainHeader'>
+        <button onClick={() => {
+          localStorage.removeItem('BNtoken')
+          window.location.href = '/login'
+        }} className='logoutBtn'>Log Out</button>
+      </div>
+      <div className='contentHeader'>
+        <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
+        {currPage === 'enterAttendance' && <p className='secondaryTxt'>Date: {formattedDate}</p>}
 
-        </div>
-        <div className='mainContent'>
-          {currPage === 'reports' && (
-            <>
-              <div className='reportsContainer'>
-                <div className='reportsHeader'>
-                  <div id="fromDiv" className='reportsHeaderInputDiv'>
-                    <label htmlFor="from">
-                      FROM:
-                      <input defaultValue={fromDate} onChange={handleFromDateChange} className='dataInp' type="date" id="from" />
-                    </label>
-                  </div>
-                  <div id="toDiv" className='reportsHeaderInputDiv'>
-                    <label htmlFor="from">
-                      TO:
-                      <input defaultValue={fromDate} onChange={handleToDateChange} className='dataInp' type="date" id="from" />
-                    </label>
-                  </div>
-                  <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
-                    <button onClick={handleGetReport}>Get Report</button>
-                  </div>
+      </div>
+      <div className='mainContent'>
+        {currPage === 'reports' && (
+          <>
+            <div style={loading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContainer'>
+              {!loading && (<div className='reportsHeader'>
+                <div id="fromDiv" className='reportsHeaderInputDiv'>
+                  <label htmlFor="from">
+                    FROM:
+                    <input defaultValue={fromDate} onChange={handleFromDateChange} className='dataInp' type="date" id="from" />
+                  </label>
                 </div>
-                <div className='reportsContent'>
-                  {
-                    reportData.length != 0 && (
-                      <>
-                        <table className='reportTable'>
-                          <thead>
-                            <tr>
-                              <th>CLASS</th>
-                              <th>REGULAR</th>
-                              <th>SUBSTITUTION</th>
-                              <th>TOTAL</th>
-                            </tr>
+                <div id="toDiv" className='reportsHeaderInputDiv'>
+                  <label htmlFor="from">
+                    TO:
+                    <input defaultValue={fromDate} onChange={handleToDateChange} className='dataInp' type="date" id="from" />
+                  </label>
+                </div>
+                <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
+                  <button onClick={handleGetReport}>Get Report</button>
+                </div>
+              </div>)}
+              <div style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContent'>
+                {
+                  noData && (
+                    <h1>No Data</h1>
+                  )
+                }
+                
+                {!noData && loading && (
+                  <SyncLoader
+                    color="#181406"
+                    loading={true}
+                    size={12}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                    speedMultiplier={0.7}
+                  />
+                )}
+                {
+                  !noData && reportData.length != 0 && !reportLoading && !loading && (
+                    <>
+                      <table className='reportTable'>
+                        <thead>
+                          <tr>
+                            <th>CLASS</th>
+                            <th>REGULAR</th>
+                            <th>SUBSTITUTION</th>
+                            <th>TOTAL</th>
+                          </tr>
 
-                          </thead>
-                          <tbody>
-                            {reportData.map((period) => {
-                              return (
-                                <tr key={period.class}>
-                                  <td>{period.class}</td>
-                                  <td>{period.regular}</td>
-                                  <td>{period.substitution}</td>
-                                  <td>{period.total}</td>
-                                </tr>
-                              )
-                            })}
-                          </tbody>
-                        </table>
-                      </>
-                    )
-                  }
+                        </thead>
+                        <tbody>
+                          {reportData.map((period) => {
+                            return (
+                              <tr key={period.class}>
+                                <td>{period.class}</td>
+                                <td>{period.regular}</td>
+                                <td>{period.substitution}</td>
+                                <td>{period.total}</td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </>
+                  )
+                }
+                {
+                  !noData && reportData.length != 0 && reportLoading && (
+                    <SyncLoader
+
+                      color="#181406"
+                      loading={true}
+                      size={12}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                      speedMultiplier={0.7}
+                    />
+
+                  )
+                }
+              </div>
+            </div>
+          </>
+        )}
+        {currPage === 'enterAttendance' && !enteredToday && (
+          <>
+            {!enteredToday && (
+              <div className='enterAttendanceContainer'>
+                <div className='enterAttendanceHeader'>
+                  {!submitted && (
+                    <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
+                  )}
+                  {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Today Report</h2>}
+                </div>
+                <div className='enterAttendanceContentContainer'>
+                  {!submitted && !attendanceSendingLoader && (
+                    <div className='enterAttendanceContent'>
+                      <div className='container'>
+                        <div className="checkbox-group">
+                          <label style={{ color: 'rgba(255, 78, 33, 0.99)' }}>
+
+                            <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
+                            Leisure ?
+                          </label>
+                          <label style={{ color: 'rgb(0, 187, 255)' }} className={isLeisure ? "formDisabled" : ""}>
+                            <input onChange={handleSubstitutionChange} disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
+                            Substitution ?
+                          </label>
+                        </div>
+
+                        <label className={isLeisure ? "formDisabled" : ""} htmlFor="class">CLASS</label>
+                        <input onChange={handleClassEntry} disabled={isLeisure} type="number" id="class" min="1" max="12" placeholder="1 - 12" />
+
+                        <div className="branch-group">
+                          <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >BRANCH</span>
+                          <div className="branches">
+                            <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                              <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
+                              MPC
+                            </label>
+                            <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                              <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="BIPC" />
+                              BIPC
+                            </label>
+                            <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                              <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
+                              MBIPC
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="year-group">
+                          <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >YEAR</span>
+                          <div className="years">
+                            <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                              <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
+                              1
+                            </label>
+                            <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
+                              <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="2" />
+                              2
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="section-group">
+                          <span className={isLeisure ? "formDisabled" : ""} >SECTION</span>
+                          <div className="sections">
+                            <label className={isLeisure ? "formDisabled" : ""} >
+                              <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="A" defaultChecked />
+                              A
+                            </label>
+                            <label className={isLeisure ? "formDisabled" : ""} >
+                              <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="B" />
+                              B
+                            </label>
+                            <label className={isLeisure ? "formDisabled" : ""} >
+                              <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="C" />
+                              C
+                            </label>
+                            <label className={isLeisure ? "formDisabled" : ""} >
+                              <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="D" />
+                              D
+                            </label >
+                            <label className={isLeisure ? "formDisabled" : ""} >
+                              <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="E" />
+                              E
+                            </label>
+                          </div>
+                        </div>
+
+                        <button onClick={handleNextPeriod} className='nextPeriod' type="button">Next Period &gt;&gt;</button>
+                      </div>
+
+                    </div>
+                  )}
+                  {dayReport.length > 0 && (
+                    <div className='dayReport'>
+                      <table className='dayReportTable'>
+                        <thead>
+                          <tr>
+                            <th>Peroiod</th>
+                            <th>class</th>
+                            <th>branch</th>
+                            <th>year</th>
+                            <th>Substitution</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          {dayReport.map((period, index) => (
+                            <tr key={index}>
+                              <td><b>{index + 1}</b></td>
+                              {period.isLeisure && <td className='leisureRow' colSpan={4}><b>Leisure</b></td>}
+                              {!period.isLeisure && (
+                                <>
+                                  <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class + " " + period.section}</td>
+                                  <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.branch : '-'}</td>
+                                  <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.year : '-'}</td>
+                                  <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.isSubstitution ? 'Yes' : 'No'}</td>
+                                </>
+                              )}
+
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <div className='okayBtnDiv'>
+                        <button onClick={handleNo} className='noBtn'>No</button>
+                        <button onClick={handleYes} className='okayBtn'>Okay</button>
+                      </div>
+                    </div>
+
+                  )}
+
+                  {attendanceSendingLoader && (
+                    <SyncLoader
+                      color="black"
+                      loading={true}
+                      size={12}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  )}
                 </div>
               </div>
-            </>
-          )}
-          {currPage === 'enterAttendance' && !enteredToday && (
-            <>
-              {!enteredToday && (
-                <div className='enterAttendanceContainer'>
-                  <div className='enterAttendanceHeader'>
-                    {!submitted && (
-                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
-                    )}
-                    {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Attendance Submitted</h2>}
-                  </div>
-                  <div className='enterAttendanceContentContainer'>
-                    {!submitted && (
-                      <div className='enterAttendanceContent'>
-                        <div className='container'>
-                          <div className="checkbox-group">
-                            <label style={{ color: 'rgba(255, 78, 33, 0.99)' }}>
+            )}
 
-                              <input onChange={handleLeisureChange} className='checkboxes' type="checkbox" name="leisure" />
-                              Leisure ?
-                            </label>
-                            <label style={{ color: 'rgb(0, 187, 255)' }} className={isLeisure ? "formDisabled" : ""}>
-                              <input onChange={handleSubstitutionChange} disabled={isLeisure} className={isLeisure ? "checkboxes formDisabled" : "checkboxes"} type="checkbox" name="substitution" />
-                              Substitution ?
-                            </label>
-                          </div>
+          </>
+        )}
+        {enteredToday && currPage === 'enterAttendance' && (
+          <>
+            <p>Completed todays Attendance entry</p>
+            <a href="/">Enter Again</a>
+          </>
+        )}
+        {/* <SyncLoader
+            color="black"
+            loading={true}
+            size={12}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          /> */}
 
-                          <label className={isLeisure ? "formDisabled" : ""} htmlFor="class">CLASS</label>
-                          <input onChange={handleClassEntry} disabled={isLeisure} type="number" id="class" min="1" max="12" placeholder="1 - 12" />
-
-                          <div className="branch-group">
-                            <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >BRANCH</span>
-                            <div className="branches">
-                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                                <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MPC" defaultChecked />
-                                MPC
-                              </label>
-                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                                <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="BIPC" />
-                                BIPC
-                              </label>
-                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                                <input onChange={handleBranchChange} disabled={isLeisure} type="radio" name="branch" value="MBIPC" />
-                                MBIPC
-                              </label>
-                            </div>
-                          </div>
-
-                          <div className="year-group">
-                            <span className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >YEAR</span>
-                            <div className="years">
-                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                                <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="1" defaultChecked />
-                                1
-                              </label>
-                              <label className={isLeisure || classValue <= 10 ? "formDisabled" : ""} >
-                                <input onChange={handleYearChange} disabled={isLeisure} type="radio" name="year" value="2" />
-                                2
-                              </label>
-                            </div>
-                          </div>
-
-                          <div className="section-group">
-                            <span className={isLeisure ? "formDisabled" : ""} >SECTION</span>
-                            <div className="sections">
-                              <label className={isLeisure ? "formDisabled" : ""} >
-                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="A" defaultChecked />
-                                A
-                              </label>
-                              <label className={isLeisure ? "formDisabled" : ""} >
-                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="B" />
-                                B
-                              </label>
-                              <label className={isLeisure ? "formDisabled" : ""} >
-                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="C" />
-                                C
-                              </label>
-                              <label className={isLeisure ? "formDisabled" : ""} >
-                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="D" />
-                                D
-                              </label >
-                              <label className={isLeisure ? "formDisabled" : ""} >
-                                <input onChange={handleSectionChange} disabled={isLeisure} type="radio" name="section" value="E" />
-                                E
-                              </label>
-                            </div>
-                          </div>
-
-                          <button onClick={handleNextPeriod} className='nextPeriod' type="button">Next Period &gt;&gt;</button>
-                        </div>
-
-                      </div>
-                    )}
-                    {dayReport.length > 0 && (
-                      <div className='dayReport'>
-                        <h3>Day Report</h3>
-                        <table className='dayReportTable'>
-                          <thead>
-                            <tr>
-                              <th>Peroiod</th>
-                              <th>class</th>
-                              <th>branch</th>
-                              <th>year</th>
-                              <th>Substitution</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-
-                            {dayReport.map((period, index) => (
-                              <tr key={index}>
-                                <td><b>{index + 1}</b></td>
-                                {period.isLeisure && <td className='leisureRow' colSpan={4}><b>Leisure</b></td>}
-                                {!period.isLeisure && (
-                                  <>
-                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class + " " + period.section}</td>
-                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.branch : '-'}</td>
-                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.class > 10 ? period.year : '-'}</td>
-                                    <td className={period.isSubstitution ? "substitutionRow" : ""}>{period.isSubstitution ? 'Yes' : 'No'}</td>
-                                  </>
-                                )}
-
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                        <div className='okayBtnDiv'>
-                          <button onClick={handleNo} className='noBtn'>No</button>
-                          <button onClick={handleYes} className='okayBtn'>Okay</button>
-                        </div>
-                      </div>
-
-                    )}
-                  </div>
-                </div>
-              )}
-
-            </>
-          )}
-          {enteredToday && currPage === 'enterAttendance' && (
-            <>
-              <p>Completed todays Attendance entry</p>
-              <a href="/">Enter Again</a>
-            </>
-          )}
-
-
-        </div>
-      </main>
-    </div>
-  );
+      </div>
+    </main>
+  </div>
+);
 }
 
 export default Home;
