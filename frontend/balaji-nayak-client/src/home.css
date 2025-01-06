@@ -462,3 +462,18 @@ label {
     color: #444;
     font-weight: bold;
 }
+.prevNextBtnDiv{
+    width: 100%;
+        display: flex;align-items: center;justify-content: space-between;
+    padding: 10px 15px;
+}
+.tablePrev,.tableNext{
+    width: 20%;
+    padding: 10px 15px;
+    border: none;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
