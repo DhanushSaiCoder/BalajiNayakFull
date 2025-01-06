@@ -50,6 +50,7 @@ function Home() {
   const [fromDateObj, setFromDateObj] = useState({})
   const [toDateObj, setToDateObj] = useState({})
 
+  const [noData,setNoData] = useState(true)
   //loader states
   const [loading, setLoading] = useState(false)
   const [reportLoading, setReportLoading] = useState(false)
@@ -147,7 +148,6 @@ function Home() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Got user email:', data);
         setUserEmail(data.email);
         // setUserEmail(data);
       })
@@ -188,7 +188,6 @@ useEffect(() => {
 
 useEffect(() => {
   if (currPage === 'reports') {
-    console.log('Fetching user months...')
     setLoading(true)
     fetch('http://localhost:5000/months', {
       method: 'GET',
@@ -199,7 +198,6 @@ useEffect(() => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Got Users months.', data.months)
 
         storeUserMonths(data);
       }
@@ -380,7 +378,6 @@ useEffect(() => {
   }
   TempReqDays = TempReqDays2
 
-  console.log('TempReqDays after flattening:', TempReqDays);
 
   // Filter days based on date range
   let ReqDays = []
@@ -394,11 +391,8 @@ useEffect(() => {
       date: date.getUTCDate()
     };
 
-    console.log('Checking date:', result);
 
     // Log the `fromDateObj` and `toDateObj` values for comparison
-    console.log('fromDateObj:', fromDateObj);
-    console.log('toDateObj:', toDateObj);
 
     // Check if the date is within the range
     if (
@@ -413,7 +407,6 @@ useEffect(() => {
     }
   }
 
-  console.log('Filtered ReqDays within date range:', ReqDays);
 
   // Get periods from filtered ReqDays
   let ReqPeriods = []
@@ -421,7 +414,6 @@ useEffect(() => {
     ReqPeriods.push(ReqDays[i].periods)
   }
 
-  console.log('ReqPeriods from ReqDays:', ReqPeriods);
 
   // Filter out leisure periods
   let nonLeisurePeriods = []
@@ -433,7 +425,6 @@ useEffect(() => {
     }
   }
 
-  console.log('nonLeisurePeriods:', nonLeisurePeriods);
 
   setReqPeriods((prev) => {
     return [...nonLeisurePeriods]
@@ -441,9 +432,8 @@ useEffect(() => {
 }, [reqMonths]);
 
 useEffect(() => {
-  if (reqPeriods.length == 0) return console.log('No classes attended.');
 
-  console.log('reqPeriods:', reqPeriods);
+
 
   // Convert the reqPeriods data to the required format
   let convertedReqPeriods = []
@@ -461,7 +451,6 @@ useEffect(() => {
     }
   }
 
-  console.log('converted reqPeriods:', convertedReqPeriods);
 
   // Function to count periods
   let periods = convertedReqPeriods
@@ -487,7 +476,7 @@ useEffect(() => {
       }
     });
 
-    console.log('countPeriods result:', result);
+
     return result;
   }
 
@@ -504,8 +493,10 @@ useEffect(() => {
       output.push(periodData)
     })
 
-    console.log('Output after adding total:', output);
+
     setReportLoading(false)
+    if(output.length == 0) setNoData(true) 
+    else setNoData(false)
     setReportData(output)
   }
 
@@ -514,7 +505,6 @@ useEffect(() => {
 
 }, [reqPeriods]);
 
-reportData.length != 0 && console.log('reportData: ', reportData);
 
 
 
@@ -583,7 +573,13 @@ return (
                 </div>
               </div>)}
               <div style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContent'>
-                {loading && (
+                {
+                  noData && (
+                    <h1>No Data</h1>
+                  )
+                }
+                
+                {!noData && loading && (
                   <SyncLoader
                     color="#181406"
                     loading={true}
@@ -594,7 +590,7 @@ return (
                   />
                 )}
                 {
-                  reportData.length != 0 && !reportLoading && !loading && (
+                  !noData && reportData.length != 0 && !reportLoading && !loading && (
                     <>
                       <table className='reportTable'>
                         <thead>
@@ -623,7 +619,7 @@ return (
                   )
                 }
                 {
-                  reportData.length != 0 && reportLoading && (
+                  !noData && reportData.length != 0 && reportLoading && (
                     <SyncLoader
 
                       color="#181406"
