@@ -67,6 +67,8 @@ function Home() {
 
   //table Pagination statess
   const [currTablePage, setCurrTablePage] = useState(1)
+  const [rowLimit, setRowLimit] = useState(5)
+  const [paginationRequired, setPaginationRequired] = useState(false)
 
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -508,6 +510,19 @@ function Home() {
 
   }, [reqPeriods]);
 
+  const handlePaginationNext = () => {
+    setCurrTablePage(prev => { return prev + 1 })
+  }
+  const handlePaginationPrev = () => {
+    setCurrTablePage(prev => {
+      if (prev != 1) {
+        return prev - 1
+      }
+      else return prev
+    })
+
+  }
+  console.log('current Table page: ', currTablePage)
 
 
 
@@ -637,8 +652,8 @@ function Home() {
                   }
                   {!noData && reportData.length != 0 && !reportLoading && !loading && (
                     <div className='prevNextBtnDiv'>
-                      <button className='tablePrev'>Previous</button>
-                      <button className='tableNext'>Next</button>
+                      <button onClick={handlePaginationPrev} className='tablePrev'>Previous</button>
+                      <button onClick={handlePaginationNext} className='tableNext'>Next</button>
                     </div>
                   )}
                 </div>
