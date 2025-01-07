@@ -559,7 +559,7 @@ function Home() {
     backgroundColor: 'dimgrey',
     color: 'white',
     cursor: 'default',
-    opacity: 0.7
+    opacity: 0.2
   }
 
 

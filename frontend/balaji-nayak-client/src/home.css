@@ -491,4 +491,11 @@ label {
     cursor: pointer;
     border-top:  2.5px solid #72ccf3;
     border-left:  3.5px solid #3a7994;
+    transition: all 0.2s ease;
+}
+#downloadBtn:hover{
+    background-color: #057eb1;
+
+    border-top:  1.5px solid #72ccf3;
+    border-left:  2.5px solid #3a7994;
 }
