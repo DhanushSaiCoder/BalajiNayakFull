@@ -6,6 +6,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Montserrat", serif;
+
 }
 body {
     margin: 0;
@@ -432,7 +434,7 @@ label {
 }
 
 .dayReportTable tbody tr:nth-child(even),.reportTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for alternating rows */
+    background-color: #f3f3f3; /* Light gray for alternating rows */
 }
 
 .dayReportTable tbody tr:nth-child(odd) ,.reportTable tbody tr:nth-child(odd) {
@@ -461,4 +463,32 @@ label {
     margin-bottom: 10px;
     color: #444;
     font-weight: bold;
+}
+.prevNextBtnDiv{
+    width: 100%;
+        display: flex;align-items: center;justify-content: space-between;
+    padding: 10px 15px;
+}
+.tablePrev,.tableNext{
+    width: auto;
+    padding: 10px 25px;
+    border: none;
+    background-color: #06bd3a;
+    color: rgb(255, 254, 248);
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#downloadBtn{
+    width: 35%;
+    height: auto;
+    padding: 10px 10px;
+    border: none;
+    background-color: #0686bd;
+    color: rgb(255, 254, 248);
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border-top:  2.5px solid #72ccf3;
+    border-left:  3.5px solid #3a7994;
 }
