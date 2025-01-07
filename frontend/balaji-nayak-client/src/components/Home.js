@@ -688,10 +688,10 @@ function Home() {
                     </label>
                   </div>
                   <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
-                    <button onClick={handleGetReport}>Get Report</button>
+                    <button id="getReportBtn" onClick={handleGetReport}>Get Report</button>
                   </div>
                 </div>)}
-                <div style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContent'>
+                <div id='reportTableDiv' style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContent'>
                   {
                     noData && (
                       <h1>No Data</h1>
@@ -758,7 +758,7 @@ function Home() {
 
                     )
                   }
-                  {!noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
+                  { !isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
                     <div className='prevNextBtnDiv'>
                       <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
                       <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
@@ -766,7 +766,13 @@ function Home() {
                     </div>
                   )}
                 </div>
-
+                { isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
+                    <div className='prevNextBtnDiv'>
+                      <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
+                      <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
+                      <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
+                    </div>
+                  )}
               </div>
             </>
           )}
