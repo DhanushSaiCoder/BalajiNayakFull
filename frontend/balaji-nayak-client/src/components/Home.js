@@ -258,7 +258,7 @@ function Home() {
     const monthId = data._id;
 
     // Fetch day by sending GET request to /months/day with JWT token in headers
-    fetch(`http://localhost:5000/months/${monthId}`, {
+    fetch(`${baseURL}/months/${monthId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
