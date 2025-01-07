@@ -3,10 +3,10 @@ import '../home.css';
 import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
 import html2canvas from 'html2canvas'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars,faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import MobileNav from './MobileNav';
- 
+
 function Home() {
 
   //responsiveness
@@ -24,6 +24,11 @@ function Home() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+
+  //responsive states
+  const [mobileNav, setMobileNav] = useState(false)
+
 
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
@@ -94,6 +99,8 @@ function Home() {
   const [paginatedReportData, setPaginatedReportData] = useState([])
   const [tableNextPageValid, setTableNextPageValid] = useState(true)
   const [tablePrevPageValid, setTablePrevPageValid] = useState(true)
+
+
 
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -644,7 +651,10 @@ function Home() {
           {isMobile && (
             <>
               <h1>ATTENDANCE TRACKER</h1>
-              <FontAwesomeIcon className='fontAwesome' icon={faBars} />
+              <FontAwesomeIcon onClick={() => {
+                setMobileNav((prev) => { return !prev })
+              }
+              } className='fontAwesome' icon={mobileNav ? faXmark : faBars} />
             </>
           )}
 
@@ -653,10 +663,10 @@ function Home() {
             window.location.href = '/login'
           }} className='logoutBtn'>Log Out</button>}
         </div>
-      {isMobile && <MobileNav currPage={currPage} handlePageChange={handlePageChange}/>}
+        {isMobile && mobileNav && <MobileNav currPage={currPage} handlePageChange={handlePageChange} />}
 
         <div className='contentHeader'>
-          <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
+          <h1 id='mainHeading'>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
           {currPage === 'enterAttendance' && <p className='secondaryTxt'>Date: {formattedDate}</p>}
 
         </div>
@@ -678,10 +688,10 @@ function Home() {
                     </label>
                   </div>
                   <div id="getReportBtnDiv" className='reportsHeaderInputDiv'>
-                    <button onClick={handleGetReport}>Get Report</button>
+                    <button id="getReportBtn" onClick={handleGetReport}>Get Report</button>
                   </div>
                 </div>)}
-                <div style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContent'>
+                <div id='reportTableDiv' style={reportLoading ? { justifyContent: "center" } : { justifyContent: "flex-start" }} className='reportsContent'>
                   {
                     noData && (
                       <h1>No Data</h1>
@@ -748,7 +758,7 @@ function Home() {
 
                     )
                   }
-                  {!noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
+                  { !isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
                     <div className='prevNextBtnDiv'>
                       <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
                       <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
@@ -756,7 +766,13 @@ function Home() {
                     </div>
                   )}
                 </div>
-
+                { isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
+                    <div className='prevNextBtnDiv'>
+                      <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
+                      <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
+                      <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
+                    </div>
+                  )}
               </div>
             </>
           )}
@@ -766,7 +782,7 @@ function Home() {
                 <div className='enterAttendanceContainer'>
                   <div className='enterAttendanceHeader'>
                     {!submitted && (
-                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
+                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; {isMobile ? '':'Previous Period'}</button>
                     )}
                     {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Today Report</h2>}
                   </div>

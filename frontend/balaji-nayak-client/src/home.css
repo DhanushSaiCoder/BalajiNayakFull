@@ -418,7 +418,7 @@ label {
     font-family: "Arial", sans-serif;
     text-align: left;
     background-color: #ffffff;
-    border: 1px solid #ddd;
+    border: 3px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -530,12 +530,12 @@ label {
     border-radius: 0;
     border-bottom: 0.5px solid rgba(255, 254, 248, 0.5);
 }
-#mobileLogOutBtn{
+#mobileLogOutBtn {
     color: #ff4942;
 }
 @media screen and (max-width: 768px) {
     body {
-        font-size: medium;
+        font-size: 10px;
         background-color: #eaeaea;
     }
 
@@ -545,13 +545,89 @@ label {
 
     main {
         width: 100vw;
+        font-size: 10px;
+    }
+    #mainHeading {
+        font-size: large;
+    }
+    .contentHeader p {
+        font-size: small;
+        text-decoration: underline;
     }
     .mainHeader {
         background-color: #757575;
+        font-size: 10px;
 
         color: rgb(255, 254, 248);
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
+    .enterAttendanceContainer {
+        width: 95%;
+    }
+    .prevPeriod {
+        left: 10%;
+    }
+    .enterAttendanceContent {
+        width: 80%;
+        padding: 10px;
+    }
+    .reportsHeader {
+        height: auto;
+        width: 95vw;
+        height: auto;
+        flex-direction: column;
+        justify-content: flex-end;
+        background-color: rgb(212, 211, 208);
+        padding: 20px 0;
+    }
+    #fromDiv,
+    #toDiv {
+        width: 100%;
+        border-radius: 0;
+    }
+    .reportsHeaderInputDiv {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .reportsHeaderInputDiv label {
+        font-size: medium;
+    }
+    #getReportBtn,
+    #getReportBtnDiv {
+        width: 70%;
+    }
+    .dataInp {
+        width: 250px;
+    }
+    #reportTableDiv,
+    .reportTable {
+        width: 95vw;
+    }
+    #reportTableDiv {
+        margin-top: 20px;
+        border: 6px double dimgray;
+        overflow-x:scroll;
+        padding: 5px;
+        background-color: #3333332d;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .tableNext,.tablePrev{
+        width: auto;
+        padding: 10px 10px;
+    }
+    #reportTable{
+        border: 5px soild black;
+    }
+}
+
+button {
+    font-weight: bold;
 }
