@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../home.css';
-import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
+import SyncLoader from 'react-spinners/esm/SyncLoader';
 import html2canvas from 'html2canvas'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars,faXmark } from '@fortawesome/free-solid-svg-icons'
