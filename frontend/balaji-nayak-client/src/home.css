@@ -479,3 +479,16 @@ label {
     font-weight: bold;
     cursor: pointer;
 }
+#downloadBtn{
+    width: 35%;
+    height: auto;
+    padding: 10px 10px;
+    border: none;
+    background-color: #0686bd;
+    color: rgb(255, 254, 248);
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border-top:  2.5px solid #72ccf3;
+    border-left:  3.5px solid #3a7994;
+}
