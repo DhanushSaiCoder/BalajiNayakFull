@@ -526,6 +526,7 @@ label {
 
 .mobileNavButtons {
     width: 100%;
+    height: 60px;
     border-radius: 0;
     border-bottom: 0.5px solid rgba(255, 254, 248, 0.5);
 }
@@ -546,7 +547,8 @@ label {
         width: 100vw;
     }
     .mainHeader {
-        background-color: #181406;
+        background-color: #757575;
+
         color: rgb(255, 254, 248);
         display: flex;
         align-items: center;
