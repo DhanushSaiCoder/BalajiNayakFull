@@ -7,7 +7,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Montserrat", serif;
-
 }
 body {
     margin: 0;
@@ -27,6 +26,7 @@ body {
     background-color: #181406;
     color: rgb(255, 254, 248);
     font-size: 0.85rem;
+    min-width: 230px;
 }
 .navHeaderDiv {
     width: 100%;
@@ -388,12 +388,10 @@ label {
 #toDiv {
     width: 40%;
     border-radius: 0px;
-
 }
 #getReportBtnDiv {
     width: 20%;
     border-radius: 0 20px 20px 0;
-
 }
 #getReportBtnDiv button {
     padding: 13px 25px;
@@ -410,7 +408,8 @@ label {
     color: #ffffff; /* Brighter white for text */
 }
 
-.dayReportTable ,.reportTable{
+.dayReportTable,
+.reportTable {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
@@ -422,54 +421,66 @@ label {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.dayReportTable thead ,.reportTable thead {
+.dayReportTable thead,
+.reportTable thead {
     background-color: #f4f4f4; /* Soft gray for light theme */
     color: #333; /* Dark text for contrast */
 }
 
 .dayReportTable th,
-.dayReportTable td,.reportTable th,.reportTable td {
+.dayReportTable td,
+.reportTable th,
+.reportTable td {
     padding: 12px 15px;
     border: 1px solid #ddd;
 }
 
-.dayReportTable tbody tr:nth-child(even),.reportTable tbody tr:nth-child(even) {
+.dayReportTable tbody tr:nth-child(even),
+.reportTable tbody tr:nth-child(even) {
     background-color: #f3f3f3; /* Light gray for alternating rows */
 }
 
-.dayReportTable tbody tr:nth-child(odd) ,.reportTable tbody tr:nth-child(odd) {
+.dayReportTable tbody tr:nth-child(odd),
+.reportTable tbody tr:nth-child(odd) {
     background-color: #ffffff; /* Pure white for alternating rows */
 }
 
-.dayReportTable tbody tr:hover ,.reportTable tbody tr:hover {
+.dayReportTable tbody tr:hover,
+.reportTable tbody tr:hover {
     background-color: #f1f5f8; /* Subtle blue-gray hover effect */
     cursor: pointer;
 }
 
-.dayReportTable th,.reportTable th {
+.dayReportTable th,
+.reportTable th {
     text-transform: uppercase;
     letter-spacing: 0.03em;
     font-weight: 600;
     /* text-align: center; */
 }
 
-.dayReportTable tbody td,.reportTable tbody td {
+.dayReportTable tbody td,
+.reportTable tbody td {
     color: #555; /* Slightly lighter text for balance */
     /* text-align: center; */
 }
 
-.dayReportTable caption ,.reportTable caption {
+.dayReportTable caption,
+.reportTable caption {
     font-size: 18px;
     margin-bottom: 10px;
     color: #444;
     font-weight: bold;
 }
-.prevNextBtnDiv{
+.prevNextBtnDiv {
     width: 100%;
-        display: flex;align-items: center;justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 10px 15px;
 }
-.tablePrev,.tableNext{
+.tablePrev,
+.tableNext {
     width: auto;
     padding: 10px 25px;
     border: none;
@@ -479,7 +490,7 @@ label {
     font-weight: bold;
     cursor: pointer;
 }
-#downloadBtn{
+#downloadBtn {
     width: 35%;
     height: auto;
     padding: 10px 10px;
@@ -489,13 +500,48 @@ label {
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-    border-top:  2.5px solid #72ccf3;
-    border-left:  3.5px solid #3a7994;
+    border-top: 2.5px solid #72ccf3;
+    border-left: 3.5px solid #3a7994;
     transition: all 0.2s ease;
 }
-#downloadBtn:hover{
+#downloadBtn:hover {
     background-color: #057eb1;
 
-    border-top:  1.5px solid #72ccf3;
-    border-left:  2.5px solid #3a7994;
+    border-top: 1.5px solid #72ccf3;
+    border-left: 2.5px solid #3a7994;
+}
+.fontAwesome {
+    color: #fff;
+    font-size: 25px;
+}
+
+/* mobileNav styles */
+.mobileNav {
+    width: 100vw;
+    height: 30vh;
+    background-color: #181406;
+    color: rgb(255, 254, 248);
+    border-top: 2px solid rgba(255, 254, 248,0.5)
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: medium;
+        background-color: #eaeaea;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    main {
+        width: 100vw;
+    }
+    .mainHeader {
+        background-color: #181406;
+        color: rgb(255, 254, 248);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 }

@@ -1,9 +1,30 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../home.css';
 import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
 import html2canvas from 'html2canvas'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
+import MobileNav from './MobileNav';
+ 
 function Home() {
+
+  //responsiveness
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initial check for mobile view
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Update state when window resizes
+    };
+
+    window.addEventListener('resize', handleResize); // Attach the event listener
+
+    // Cleanup the event listener on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
   }
@@ -578,7 +599,7 @@ function Home() {
         // Create a link element to trigger download
         const link = document.createElement("a");
         link.href = image;
-        link.download = `${currDay}/${currMonth}/${currYear} - ${currTablePage}.png`; 
+        link.download = `${currDay}/${currMonth}/${currYear} - ${currTablePage}.png`;
         link.click();
       } catch (error) {
         console.error("Error downloading table as image:", error);
@@ -589,7 +610,8 @@ function Home() {
   };
   return (
     <div className='HomeContainer'>
-      <div className='leftNav'>
+
+      {!isMobile && <div className='leftNav'>
         <div className='navHeaderDiv'>
           <h1>ATTENDANCE TRACKER</h1>
         </div>
@@ -616,15 +638,23 @@ function Home() {
             )
           }
         </div>
-      </div>
-
+      </div>}
       <main>
         <div className='mainHeader'>
-          <button onClick={() => {
+          {isMobile && (
+            <>
+              <h1>ATTENDANCE TRACKER</h1>
+              <FontAwesomeIcon className='fontAwesome' icon={faBars} />
+            </>
+          )}
+
+          {!isMobile && <button onClick={() => {
             localStorage.removeItem('BNtoken')
             window.location.href = '/login'
-          }} className='logoutBtn'>Log Out</button>
+          }} className='logoutBtn'>Log Out</button>}
         </div>
+      {isMobile && <MobileNav currPage={currPage} handlePageChange={handlePageChange}/>}
+
         <div className='contentHeader'>
           <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
           {currPage === 'enterAttendance' && <p className='secondaryTxt'>Date: {formattedDate}</p>}
@@ -678,7 +708,7 @@ function Home() {
                                 textAlign: 'center ',
                                 backgroundColor: 'dimgray',
                                 color: 'white'
-                              }}  colSpan={4}>Page {currTablePage}/{Math.ceil(reportData.length / rowLimit)}</td>
+                              }} colSpan={4}>Page {currTablePage}/{Math.ceil(reportData.length / rowLimit)}</td>
                             </tr>
                             <tr>
                               <th>CLASS</th>
