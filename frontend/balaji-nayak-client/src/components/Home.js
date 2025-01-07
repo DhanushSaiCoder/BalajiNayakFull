@@ -1,6 +1,7 @@
 import React, { useState, useEffect, use } from 'react';
 import '../home.css';
 import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
+import html2canvas from 'html2canvas'
 
 function Home() {
   if (!localStorage.getItem('BNtoken')) {
@@ -544,22 +545,48 @@ function Home() {
       setTableNextPageValid(true)
     }
 
-    if(currTablePage == 1){
+    if (currTablePage == 1) {
       setTablePrevPageValid(false)
     }
-    else{
+    else {
       setTablePrevPageValid(true)
     }
     console.log('Paginated report data: ', newPaginatedData);
   }, [currTablePage, reportData, rowLimit]);
 
-    const disabledBtnStyles = {
-      backgroundColor: 'red',
-      backgroundColor: 'dimgrey',
-      color: 'white',
-      cursor: 'default',
-      opacity: 0.7
+  const disabledBtnStyles = {
+    backgroundColor: 'red',
+    backgroundColor: 'dimgrey',
+    color: 'white',
+    cursor: 'default',
+    opacity: 0.7
+  }
+
+
+  //download table
+  const downloadTableAsImage = async () => {
+    const table = document.getElementById("reportTable");
+
+    if (table) {
+      try {
+        // Use html2canvas to capture the table as an image
+        const canvas = await html2canvas(table);
+
+        // Convert canvas to an image
+        const image = canvas.toDataURL("image/png");
+
+        // Create a link element to trigger download
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "table.png"; // Name of the downloaded file
+        link.click();
+      } catch (error) {
+        console.error("Error downloading table as image:", error);
+      }
+    } else {
+      console.error("Table with ID 'reportTable' not found.");
     }
+  };
   return (
     <div className='HomeContainer'>
       <div className='leftNav'>
@@ -644,13 +671,15 @@ function Home() {
                   {
                     !noData && reportData.length != 0 && !reportLoading && !loading && (
                       <>
-                        <table className='reportTable'>
+                        <table id='reportTable' className='reportTable'>
                           <thead>
-                            <th style={{
-                              textAlign:'center ',
-                              backgroundColor: 'dimgray',
-                              color: 'white'
-                            }} colSpan={4}>Page {currTablePage}/{Math.ceil(reportData.length / rowLimit)}</th>
+                            <tr colSpan={4}>
+                              <td style={{
+                                textAlign: 'center ',
+                                backgroundColor: 'dimgray',
+                                color: 'white'
+                              }}  colSpan={4}>Page {currTablePage}/{Math.ceil(reportData.length / rowLimit)}</td>
+                            </tr>
                             <tr>
                               <th>CLASS</th>
                               <th>REGULAR</th>
@@ -691,8 +720,8 @@ function Home() {
                   }
                   {!noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
                     <div className='prevNextBtnDiv'>
-                      <button disabled={!tablePrevPageValid}  onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
-                      <button id='downloadBtn'>Download</button>
+                      <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
+                      <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
                       <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
                     </div>
                   )}

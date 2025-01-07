@@ -434,7 +434,7 @@ label {
 }
 
 .dayReportTable tbody tr:nth-child(even),.reportTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for alternating rows */
+    background-color: #f3f3f3; /* Light gray for alternating rows */
 }
 
 .dayReportTable tbody tr:nth-child(odd) ,.reportTable tbody tr:nth-child(odd) {
