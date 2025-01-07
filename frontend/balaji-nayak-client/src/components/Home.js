@@ -776,7 +776,7 @@ function Home() {
                 <div className='enterAttendanceContainer'>
                   <div className='enterAttendanceHeader'>
                     {!submitted && (
-                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; Previous Period</button>
+                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; {isMobile ? '':'Previous Period'}</button>
                     )}
                     {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Today Report</h2>}
                   </div>

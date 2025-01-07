@@ -564,4 +564,19 @@ label {
         align-items: center;
         justify-content: space-between;
     }
+    .enterAttendanceContainer{
+        width: 95%;
+    }
+    .prevPeriod{
+        left: 10%;
+    }
+    .enterAttendanceContent{
+        width: 80%;
+        padding: 10px;
+    }
+   
+}
+
+button{
+    font-weight: bold;
 }
