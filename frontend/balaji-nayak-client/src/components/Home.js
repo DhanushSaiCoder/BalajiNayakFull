@@ -68,7 +68,7 @@ function Home() {
 
   //table Pagination statess
   const [currTablePage, setCurrTablePage] = useState(1)
-  const [rowLimit, setRowLimit] = useState(5)
+  const [rowLimit, setRowLimit] = useState(10)
   const [paginationRequired, setPaginationRequired] = useState(false)
   const [paginatedReportData, setPaginatedReportData] = useState([])
   const [tableNextPageValid, setTableNextPageValid] = useState(true)
@@ -578,7 +578,7 @@ function Home() {
         // Create a link element to trigger download
         const link = document.createElement("a");
         link.href = image;
-        link.download = "table.png"; // Name of the downloaded file
+        link.download = `${currDay}/${currMonth}/${currYear} - ${currTablePage}.png`; 
         link.click();
       } catch (error) {
         console.error("Error downloading table as image:", error);
