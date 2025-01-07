@@ -553,7 +553,13 @@ function Home() {
     console.log('Paginated report data: ', newPaginatedData);
   }, [currTablePage, reportData, rowLimit]);
 
-
+    const disabledBtnStyles = {
+      backgroundColor: 'red',
+      backgroundColor: 'dimgrey',
+      color: 'white',
+      cursor: 'default',
+      opacity: 0.7
+    }
   return (
     <div className='HomeContainer'>
       <div className='leftNav'>
@@ -640,6 +646,11 @@ function Home() {
                       <>
                         <table className='reportTable'>
                           <thead>
+                            <th style={{
+                              textAlign:'center ',
+                              backgroundColor: 'dimgray',
+                              color: 'white'
+                            }} colSpan={4}>Page {currTablePage}/{Math.ceil(reportData.length / rowLimit)}</th>
                             <tr>
                               <th>CLASS</th>
                               <th>REGULAR</th>
@@ -680,8 +691,8 @@ function Home() {
                   }
                   {!noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
                     <div className='prevNextBtnDiv'>
-                      <button disabled={!tablePrevPageValid}  onClick={handlePaginationPrev} className='tablePrev'>Previous</button>
-                      <button disabled={!tableNextPageValid} onClick={handlePaginationNext} className='tableNext'>Next</button>
+                      <button disabled={!tablePrevPageValid}  onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
+                      <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
                     </div>
                   )}
                 </div>

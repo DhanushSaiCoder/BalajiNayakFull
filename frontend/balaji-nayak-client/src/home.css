@@ -6,6 +6,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Montserrat", serif;
+
 }
 body {
     margin: 0;
@@ -468,8 +470,8 @@ label {
     padding: 10px 15px;
 }
 .tablePrev,.tableNext{
-    width: 20%;
-    padding: 10px 15px;
+    width: auto;
+    padding: 10px 25px;
     border: none;
     background-color: #06bd3a;
     color: rgb(255, 254, 248);
