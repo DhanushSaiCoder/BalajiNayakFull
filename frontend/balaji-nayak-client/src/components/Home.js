@@ -666,7 +666,7 @@ function Home() {
         {isMobile && mobileNav && <MobileNav currPage={currPage} handlePageChange={handlePageChange} />}
 
         <div className='contentHeader'>
-          <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
+          <h1 id='mainHeading'>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
           {currPage === 'enterAttendance' && <p className='secondaryTxt'>Date: {formattedDate}</p>}
 
         </div>

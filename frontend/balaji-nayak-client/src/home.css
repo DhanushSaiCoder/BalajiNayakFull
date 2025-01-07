@@ -534,8 +534,9 @@ label {
     color: #ff4942;
 }
 @media screen and (max-width: 768px) {
+    
     body {
-        font-size: medium;
+        font-size: 10px;
         background-color: #eaeaea;
     }
 
@@ -545,9 +546,18 @@ label {
 
     main {
         width: 100vw;
+        font-size: 10px;
+    }
+    #mainHeading{
+        font-size: large;
+    }
+    .contentHeader p{
+        font-size: small;
+        text-decoration: underline;
     }
     .mainHeader {
         background-color: #757575;
+        font-size: 10px;
 
         color: rgb(255, 254, 248);
         display: flex;
