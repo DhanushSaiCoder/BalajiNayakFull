@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function Signup() {
+  const baseURL = 'https://balajinayakfull.onrender.com'
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -25,7 +27,7 @@ function Signup() {
 
       // POST to /auth/signup
       try {
-        const response = await fetch('/auth/signup', {
+        const response = await fetch(`${baseURL}/auth/signup`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

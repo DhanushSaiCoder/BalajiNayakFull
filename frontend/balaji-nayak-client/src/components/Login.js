@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 function Login() {
+  const baseURL = 'https://balajinayakfull.onrender.com'
+
   if (localStorage.getItem('BNtoken')) {
     window.location.href = '/'
   }
@@ -21,7 +23,7 @@ function Login() {
     e.preventDefault();
     console.log('Form data sending to server...', formData);
     // POST to /auth/login
-    fetch('/auth/login', {
+    fetch(`${baseURL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
