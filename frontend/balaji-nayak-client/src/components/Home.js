@@ -8,7 +8,7 @@ import { faBars,faXmark } from '@fortawesome/free-solid-svg-icons'
 import MobileNav from './MobileNav';
 
 function Home() {
-
+  const baseURL = 'https://balajinayakfull.onrender.com'
   //responsiveness
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initial check for mobile view
 
@@ -176,7 +176,7 @@ function Home() {
   useEffect(() => {
     if (gotUserEmail) return;
 
-    fetch('http://localhost:5000/months/email', {
+    fetch(`${baseURL}/months/email`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ function Home() {
   useEffect(() => {
     if (readyToSubmit) {
       setAttendanceSendingLoader(true)
-      fetch('http://localhost:5000/months/day', {
+      fetch(`${baseURL}/months/day`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -226,7 +226,7 @@ function Home() {
   useEffect(() => {
     if (currPage === 'reports') {
       setLoading(true)
-      fetch('http://localhost:5000/months', {
+      fetch(`${baseURL}/months`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
