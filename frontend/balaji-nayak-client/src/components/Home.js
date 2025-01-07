@@ -3,10 +3,10 @@ import '../home.css';
 import SyncLoader from './../../../node_modules/react-spinners/esm/SyncLoader';
 import html2canvas from 'html2canvas'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars,faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import MobileNav from './MobileNav';
- 
+
 function Home() {
 
   //responsiveness
@@ -24,6 +24,11 @@ function Home() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+
+  //responsive states
+  const [mobileNav, setMobileNav] = useState(false)
+
 
   if (!localStorage.getItem('BNtoken')) {
     window.location.href = '/login';
@@ -94,6 +99,8 @@ function Home() {
   const [paginatedReportData, setPaginatedReportData] = useState([])
   const [tableNextPageValid, setTableNextPageValid] = useState(true)
   const [tablePrevPageValid, setTablePrevPageValid] = useState(true)
+
+
 
   const formattedDate = currDate.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -644,7 +651,10 @@ function Home() {
           {isMobile && (
             <>
               <h1>ATTENDANCE TRACKER</h1>
-              <FontAwesomeIcon className='fontAwesome' icon={faBars} />
+              <FontAwesomeIcon onClick={() => {
+                setMobileNav((prev) => { return !prev })
+              }
+              } className='fontAwesome' icon={mobileNav ? faXmark : faBars} />
             </>
           )}
 
@@ -653,7 +663,7 @@ function Home() {
             window.location.href = '/login'
           }} className='logoutBtn'>Log Out</button>}
         </div>
-      {isMobile && <MobileNav currPage={currPage} handlePageChange={handlePageChange}/>}
+        {isMobile && mobileNav && <MobileNav currPage={currPage} handlePageChange={handlePageChange} />}
 
         <div className='contentHeader'>
           <h1>{currPage === "enterAttendance" ? "Enter Attendance" : "Reports"}</h1>
