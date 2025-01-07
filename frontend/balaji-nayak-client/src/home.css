@@ -64,7 +64,8 @@ body {
     /* border: 2px solid red; */
 }
 
-.navButtons {
+.navButtons,
+.mobileNavButtons {
     width: 70%;
     height: 50px;
     /* border: 2px solid red; */
@@ -518,12 +519,19 @@ label {
 /* mobileNav styles */
 .mobileNav {
     width: 100vw;
-    height: 30vh;
+    height: auto;
     background-color: #181406;
     color: rgb(255, 254, 248);
-    border-top: 2px solid rgba(255, 254, 248,0.5)
 }
 
+.mobileNavButtons {
+    width: 100%;
+    border-radius: 0;
+    border-bottom: 0.5px solid rgba(255, 254, 248, 0.5);
+}
+#mobileLogOutBtn{
+    color: #ff4942;
+}
 @media screen and (max-width: 768px) {
     body {
         font-size: medium;
