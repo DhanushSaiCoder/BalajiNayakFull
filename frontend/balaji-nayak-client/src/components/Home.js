@@ -741,7 +741,7 @@ function Home() {
                             })}
                           </tbody>
                         </table>
-                        {reportData.length <= rowLimit && (<>
+                        {!isMobile && reportData.length <= rowLimit && (<>
                           <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
 
                         </>)}
@@ -771,13 +771,35 @@ function Home() {
                     </div>
                   )}
                 </div>
-                {isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > rowLimit && (
+                {isMobile && !noData && reportData.length !== 0 && !reportLoading && !loading && reportData.length > rowLimit ? (
                   <div className='prevNextBtnDiv'>
-                    <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
-                    <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
-                    <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
+                    <button
+                      disabled={!tablePrevPageValid}
+                      onClick={handlePaginationPrev}
+                      style={tablePrevPageValid ? {} : disabledBtnStyles}
+                      className='tablePrev'
+                    >
+                      &lt;&lt; Previous
+                    </button>
+                    <button onClick={downloadTableAsImage} id='downloadBtn'>
+                      Download
+                    </button>
+                    <button
+                      disabled={!tableNextPageValid}
+                      onClick={handlePaginationNext}
+                      style={tableNextPageValid ? {} : disabledBtnStyles}
+                      className='tableNext'
+                    >
+                      Next &gt;&gt;
+                    </button>
                   </div>
-                )}
+                ) : !noData ? (
+                  <button onClick={downloadTableAsImage} id='downloadBtn'>
+                    Download
+                  </button>
+                ) : null}
+
+
               </div>
             </>
           )}
