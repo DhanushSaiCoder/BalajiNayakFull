@@ -793,7 +793,7 @@ function Home() {
                       Next &gt;&gt;
                     </button>
                   </div>
-                ) : !noData ? (
+                ) : !noData && reportData.length > rowLimit ? (
                   <button onClick={downloadTableAsImage} id='downloadBtn'>
                     Download
                   </button>
