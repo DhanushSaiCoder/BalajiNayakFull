@@ -3,7 +3,7 @@ import '../home.css';
 import SyncLoader from 'react-spinners/esm/SyncLoader';
 import html2canvas from 'html2canvas'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars,faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import MobileNav from './MobileNav';
 
@@ -741,6 +741,11 @@ function Home() {
                             })}
                           </tbody>
                         </table>
+                        {reportData.length <= rowLimit && (<>
+                          <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
+
+                        </>)}
+
                       </>
                     )
                   }
@@ -758,7 +763,7 @@ function Home() {
 
                     )
                   }
-                  { !isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
+                  {!isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > rowLimit && (
                     <div className='prevNextBtnDiv'>
                       <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
                       <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
@@ -766,13 +771,13 @@ function Home() {
                     </div>
                   )}
                 </div>
-                { isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > 5 && (
-                    <div className='prevNextBtnDiv'>
-                      <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
-                      <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
-                      <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
-                    </div>
-                  )}
+                {isMobile && !noData && reportData.length != 0 && !reportLoading && !loading && reportData.length > rowLimit && (
+                  <div className='prevNextBtnDiv'>
+                    <button disabled={!tablePrevPageValid} onClick={handlePaginationPrev} style={tablePrevPageValid ? {} : disabledBtnStyles} className='tablePrev'>&lt;&lt; Previous</button>
+                    <button onClick={downloadTableAsImage} id='downloadBtn'>Download</button>
+                    <button disabled={!tableNextPageValid} onClick={handlePaginationNext} style={tableNextPageValid ? {} : disabledBtnStyles} className='tableNext'>Next &gt;&gt;</button>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -782,7 +787,7 @@ function Home() {
                 <div className='enterAttendanceContainer'>
                   <div className='enterAttendanceHeader'>
                     {!submitted && (
-                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; {isMobile ? '':'Previous Period'}</button>
+                      <button onClick={handlePreviousPeriod} className='prevPeriod'>&lt;&lt; {isMobile ? '' : 'Previous Period'}</button>
                     )}
                     {!submitted ? <h2>Period - {currPeriod}</h2> : <h2>Today Report</h2>}
                   </div>
