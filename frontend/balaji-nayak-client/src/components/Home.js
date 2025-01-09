@@ -697,7 +697,6 @@ function Home() {
                       <h1>No Data</h1>
                     )
                   }
-
                   {!noData && loading && (
                     <SyncLoader
                       color="#181406"
@@ -773,6 +772,7 @@ function Home() {
                 </div>
                 {isMobile && !noData && reportData.length !== 0 && !reportLoading && !loading && reportData.length > rowLimit ? (
                   <div className='prevNextBtnDiv'>
+                  // shshsh
                     <button
                       disabled={!tablePrevPageValid}
                       onClick={handlePaginationPrev}
