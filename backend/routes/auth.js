@@ -32,7 +32,7 @@ router.post("/signup", async (req, res) => {
     await newUser.save();
 
     // Generate JWT token for the new user
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1m' });
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({ message: "User created successfully", token });
   } catch (err) {
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token if credentials are correct
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // Send the token to the client to store in localStorage
     res.json({ message: "Login successful", token });
