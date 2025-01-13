@@ -770,7 +770,7 @@ function Home() {
                     </div>
                   )}
                 </div>
-                {isMobile && !noData && reportData.length !== 0 && !reportLoading && !loading && reportData.length > rowLimit ? (
+                {isMobile && !noData && reportData.length !== 0 && !reportLoading && !loading && reportData.length > rowLimit && (
                   <div className='prevNextBtnDiv'>
                     <button
                       disabled={!tablePrevPageValid}
@@ -792,11 +792,13 @@ function Home() {
                       Next &gt;&gt;
                     </button>
                   </div>
-                ) : !noData && reportData.length > rowLimit ? (
+                )}
+                {isMobile && !noData && reportData.length !== 0 && !reportLoading && !loading && reportData.length <= rowLimit && (
                   <button onClick={downloadTableAsImage} id='downloadBtn'>
                     Download
                   </button>
-                ) : null}
+                )}
+
 
 
               </div>
