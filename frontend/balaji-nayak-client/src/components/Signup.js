@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import './spinner.css';
 
 function Signup() {
-  const baseURL = 'https://balajinayakfull.onrender.com'
+  const baseURL = 'https://balajinayakfull.onrender.com';
+  const navigate = useNavigate(); // For redirecting to /signup
 
   const [formData, setFormData] = useState({
     email: '',
@@ -10,6 +12,9 @@ function Signup() {
     pin: ''
   });
   const [step, setStep] = useState(1);
+  const [errMsg, setErrMsg] = useState('');
+  const [emptyCredentials, setEmptyCredentials] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,11 +26,30 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (step === 1) {
-      setStep(2);
-    } else {
 
-      // POST to /auth/signup
+    // Check if all fields are entered before proceeding to the next step
+    if (step === 1) {
+      if (!formData.email || !formData.password) {
+        setErrMsg('Please fill in all fields.');
+        setEmptyCredentials(true); // Set emptyCredentials state to true
+        return; // Stop execution here to avoid further processing
+      } else {
+        setErrMsg(''); // Clear any previous error message
+        setEmptyCredentials(false); // Set emptyCredentials state to false
+        setStep(2); // Proceed to the next step if fields are valid
+      }
+    } else {
+      if (!formData.pin) {
+        setErrMsg('Please enter your PIN.');
+        return;
+      }
+
+      if (formData.pin.length !== 4) { // Example PIN validation
+        setErrMsg('PIN should be 4 digits long.');
+        return;
+      }
+
+      setIsLoading(true);
       try {
         const response = await fetch(`${baseURL}/auth/signup`, {
           method: 'POST',
@@ -35,25 +59,28 @@ function Signup() {
           body: JSON.stringify(formData),
         });
 
-        if (!response.ok) {
         const data = await response.json();
-
-          console.log(data.message)
-          // throw new Error('Network response was not ok');
+        if (!response.ok) {
+          setErrMsg(data.message);
+          setIsLoading(false);
+          return;
         }
 
-        const data = await response.json();
-
-        console.log('Success:', data);
-        data.token && localStorage.setItem('BNtoken', data.token);
-
-        window.location.href = '/';
-        // Handle success (e.g., redirect to login page)
+        if (data.token) {
+          localStorage.setItem('BNtoken', data.token);
+          window.location.href = '/';
+        }
       } catch (error) {
         console.error('Error:', error);
-        // Handle error (e.g., show error message)
+        setErrMsg('Something went wrong. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
     }
+  };
+
+  const handleTryAgain = () => {
+    setStep(1); // Redirect to /signup if "Try Again" button is clicked
   };
 
   const styles = {
@@ -95,6 +122,19 @@ function Signup() {
       color: '#fff',
       fontWeight: 'bold',
       cursor: 'pointer',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: '10px 0'
+    },
+    spinner: {
+      width: '20px',
+      height: '20px',
+      border: '3px solid #fff',
+      borderTop: '3px solid #007bff',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
     },
     title: {
       marginBottom: '20px',
@@ -105,8 +145,16 @@ function Signup() {
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: '10px',
-      opacity: 0.85
-    }
+      opacity: 0.85,
+    },
+    errDiv: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: '10px',
+      color: 'red',
+    },
   };
 
   return (
@@ -150,12 +198,33 @@ function Signup() {
             />
           </div>
         )}
-        <button type="submit" style={styles.button}>
-          {step === 1 ? 'Next' : 'Sign Up'}
+        {errMsg && (
+          <div style={styles.errDiv}>
+            <p>{errMsg}</p>
+          </div>
+        )}
+        {emptyCredentials && !errMsg && (
+          <div style={styles.errDiv}>
+            <p>Please fill in all fields.</p>
+          </div>
+        )}
+
+        <button type="submit" style={styles.button} disabled={isLoading}>
+          {isLoading ? <div style={styles.spinner}></div> : (step === 1 ? 'Next' : 'Sign Up')}
         </button>
+
+
+        {/* Only show "Try Again" button when an error occurs */}
+        {errMsg && !isLoading && step === 2 && (
+          <button type="button" onClick={handleTryAgain} style={styles.button}>
+            Try Again
+          </button>
+        )}
+
         {step === 1 && (
           <div style={styles.linksDiv}>
-            <p>Already had an account? </p><Link to="/login">log in</Link>
+            <p>Already have an account?</p>
+            <Link to="/login">Log in</Link>
           </div>
         )}
       </form>
