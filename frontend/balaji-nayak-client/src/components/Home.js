@@ -772,7 +772,6 @@ function Home() {
                 </div>
                 {isMobile && !noData && reportData.length !== 0 && !reportLoading && !loading && reportData.length > rowLimit ? (
                   <div className='prevNextBtnDiv'>
-                  // shshsh
                     <button
                       disabled={!tablePrevPageValid}
                       onClick={handlePaginationPrev}
