@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import './spinner.css'
 
 function Login() {
-  const baseURL = 'https://balajinayakfull.onrender.com'
+  const baseURL = 'https://balajinayakfull.onrender.com';
 
   if (localStorage.getItem('BNtoken')) {
-    window.location.href = '/'
+    window.location.href = '/';
   }
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-  const [errMsg, setErrMsg] = useState('')
-  const [emptyCredentials, setEmptyCredentials] = useState(false)
+  const [errMsg, setErrMsg] = useState('');
+  const [emptyCredentials, setEmptyCredentials] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,16 +28,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setErrMsg('')
-      setEmptyCredentials(true)
-      return
+      setErrMsg('');
+      setEmptyCredentials(true);
+      return;
+    } else {
+      setErrMsg('');
+      setEmptyCredentials(false);
     }
-    else {
-      setErrMsg('')
-      setEmptyCredentials(false)
-    }
-    console.log("Form data sending to server...", formData);
 
+    console.log("Form data sending to server...", formData);
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${baseURL}/auth/login`, {
@@ -49,11 +51,11 @@ function Login() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrMsg(data.message)
+        setErrMsg(data.message);
+        setIsLoading(false);
         return;
-      }
-      else {
-        setErrMsg('')
+      } else {
+        setErrMsg('');
       }
 
       console.log("Success:", data);
@@ -65,6 +67,8 @@ function Login() {
     } catch (error) {
       console.error("Error logging in:", error);
       alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,8 +87,6 @@ function Login() {
       borderRadius: '8px',
       boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
       width: '300px',
-
-
     },
     inputGroup: {
       marginBottom: '15px',
@@ -108,7 +110,19 @@ function Login() {
       backgroundColor: '#007bff',
       color: '#fff',
       fontWeight: 'bold',
-      cursor: 'pointer',
+      cursor: isLoading ? 'not-allowed' : 'pointer',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    spinner: {
+      width: '20px',
+      height: '20px',
+      border: '3px solid #fff',
+      borderTop: '3px solid #007bff',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
     },
     title: {
       marginBottom: '20px',
@@ -120,17 +134,15 @@ function Login() {
       justifyContent: 'center',
       marginTop: '10px',
       opacity: 0.85
-    }
-    ,
+    },
     errDiv: {
-      width:" 100%",
+      width: "100%",
       display: 'flex',
-      alignItems:'center',
+      alignItems: 'center',
       justifyContent: "center",
       margin: '10px',
       color: 'red'
-
-    }
+    },
   };
 
   return (
@@ -168,7 +180,9 @@ function Login() {
             <p>Invalid Entries.</p>
           </div>
         )}
-        <button type="submit" style={styles.button}>Login</button>
+        <button type="submit" style={styles.button} disabled={isLoading}>
+          {isLoading ? <div style={styles.spinner}></div> : 'Login'}
+        </button>
         <div style={styles.linksDiv}>
           <p>Don't have an account? </p><Link to="/signup">create new account</Link>
         </div>
