@@ -627,6 +627,16 @@ label {
     #reportTable{
         border: 5px soild black;
     }
+    .dayReport{
+        width: 90vw;
+        overflow: scroll;
+        border: 3px double rgba(105, 105, 105, 0.403);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;  
+
+    }
+
+    
 }
 
 button {
