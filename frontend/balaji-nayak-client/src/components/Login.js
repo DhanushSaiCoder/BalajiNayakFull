@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+
 function Login() {
   const baseURL = 'https://balajinayakfull.onrender.com'
 
@@ -10,6 +12,8 @@ function Login() {
     email: '',
     password: ''
   });
+  const [errMsg, setErrMsg] = useState('')
+  const [emptyCredentials, setEmptyCredentials] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,32 +25,47 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data sending to server...', formData);
-    // POST to /auth/login
-    fetch(`${baseURL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const data = await response.json();
-          console.log(data.message)
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-        data.token && localStorage.setItem('BNtoken', data.token);
-        window.location.href = '/';
-        // Handle success (e.g., redirect to login page)
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        // Handle error (e.g., show error message)
+    if (!formData.email || !formData.password) {
+      setErrMsg('')
+      setEmptyCredentials(true)
+      return
+    }
+    else {
+      setErrMsg('')
+      setEmptyCredentials(false)
+    }
+    console.log("Form data sending to server...", formData);
+
+
+    try {
+      const response = await fetch(`${baseURL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrMsg(data.message)
+        return;
+      }
+      else {
+        setErrMsg('')
+      }
+
+      console.log("Success:", data);
+
+      if (data.token) {
+        localStorage.setItem("BNtoken", data.token);
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
 
   const styles = {
@@ -102,6 +121,16 @@ function Login() {
       marginTop: '10px',
       opacity: 0.85
     }
+    ,
+    errDiv: {
+      width:" 100%",
+      display: 'flex',
+      alignItems:'center',
+      justifyContent: "center",
+      margin: '10px',
+      color: 'red'
+
+    }
   };
 
   return (
@@ -129,6 +158,16 @@ function Login() {
             style={styles.input}
           />
         </div>
+        {errMsg && (
+          <div style={styles.errDiv}>
+            <p>{errMsg}</p>
+          </div>
+        )}
+        {emptyCredentials && (
+          <div style={styles.errDiv}>
+            <p>Invalid Entries.</p>
+          </div>
+        )}
         <button type="submit" style={styles.button}>Login</button>
         <div style={styles.linksDiv}>
           <p>Don't have an account? </p><Link to="/signup">create new account</Link>

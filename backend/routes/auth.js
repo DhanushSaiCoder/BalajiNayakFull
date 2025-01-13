@@ -6,13 +6,13 @@ const router = express.Router();
 
 // Serve the signup page
 router.get('/signup', (req, res) => {
-    res.send('signup page');
-    console.log('signup page');
+  res.send('signup page');
+  console.log('signup page');
 });
 
 // Serve the login page
 router.get('/login', (req, res) => {
-    res.send('login page');
+  res.send('login page');
 
 });
 
@@ -47,24 +47,24 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(401).json({ message: "User Not Found" }); // Unified error message
     }
 
-    // Compare entered password with the hashed password stored in the database
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token if credentials are correct
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    // Send the token to the client to store in localStorage
     res.json({ message: "Login successful", token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 module.exports = router;
